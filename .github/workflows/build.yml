@@ -1,0 +1,47 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [ opened, synchronize, reopened ]  # Same as default
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_VERSION: '7.0.x'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Test
+        run: dotnet test --logger junit --results-directory "TestResults-${{ env.DOTNET_VERSION }}"
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-test-results-${{ env.DOTNET_VERSION }}
+          path: TestResults-${{ env.DOTNET_VERSION }}
+        if: ${{ always() }}
+
+      - name: Create the package
+        run: dotnet pack --configuration Release
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-package-${{ env.DOTNET_VERSION }}
+          path: ./**/*.nupkg
