@@ -1,6 +1,6 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# %NAME% Changelog
+# VContainerAnalyzer Changelog
 
 ## [Unreleased]
 ### Added

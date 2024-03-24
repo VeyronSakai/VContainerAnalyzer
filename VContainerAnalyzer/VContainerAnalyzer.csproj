@@ -23,13 +23,13 @@
   <!-- For pack -->
   <PropertyGroup>
     <!-- Required elements-->
-    <id>RoslynAnalyzerTemplate</id><!-- Must be unique within the hosting gallery -->
+    <id>VContainerAnalyzer</id><!-- Must be unique within the hosting gallery -->
     <version></version>
     <description></description>
     <authors></authors>
 
     <!-- Optional elements -->
-    <projectUrl>https://github.com/DeNA/RoslynAnalyzerTemplate</projectUrl>
+    <projectUrl>https://github.com/VeyronSakai/VContainerAnalyzer</projectUrl>
     <license></license>
     <icon></icon>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

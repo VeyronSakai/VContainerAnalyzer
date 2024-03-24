@@ -5,4 +5,4 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-RoslynAnalyzerTemplate0001 | Naming   | Warning  | Sample
+VContainerAnalyzer0001 | Naming   | Warning  | Sample

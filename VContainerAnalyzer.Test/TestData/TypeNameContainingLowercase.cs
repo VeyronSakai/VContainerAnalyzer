@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 DeNA Co., Ltd.
+// Copyright (c) 2020-2023 VeyronSakai.
 // This software is released under the MIT License.
 
 using System;

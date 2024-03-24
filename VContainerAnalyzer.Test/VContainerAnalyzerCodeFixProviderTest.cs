@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2023 DeNA Co., Ltd.
+// Copyright (c) 2020-2023 VeyronSakai.
 // This software is released under the MIT License.
 
 using System.IO;
@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Verify = Microsoft.CodeAnalysis.CSharp.Testing.NUnit.CodeFixVerifier<
-    RoslynAnalyzerTemplate.RoslynAnalyzerTemplate,
-    RoslynAnalyzerTemplate.RoslynAnalyzerTemplateCodeFixProvider>;
+    VContainerAnalyzer.VContainerAnalyzer,
+    VContainerAnalyzer.VContainerAnalyzerCodeFixProvider>;
 
-namespace RoslynAnalyzerTemplate.Test;
+namespace VContainerAnalyzer.Test;
 
 [TestFixture]
-public class RoslynAnalyzerTemplateCodeFixProviderTest
+public class VContainerAnalyzerCodeFixProviderTest
 {
     /// <summary>
     /// Test codefix provider for lowercase type name make uppercase

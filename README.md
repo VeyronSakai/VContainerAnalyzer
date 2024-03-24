@@ -1,26 +1,16 @@
-# Roslyn Analyzer Template
+# VContainerAnalyzer
 
-This repository provides a pure boilerplate template and examples to make it easier to create a new analyzer project.
-
-The analyzer project contained in this repository is based on the [project template in the Roslyn SDK](https://github.com/dotnet/roslyn-sdk/tree/main/src/VisualStudio.Roslyn.SDK/Roslyn.SDK/ProjectTemplates/CSharp/Diagnostic), made slim.
-
-The cleanup workflow contained in this repository is inspired by [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template).
+[![Build](https://github.com/VeyronSakai/VContainerAnalyzer/workflows/Build/badge.svg)](../../actions)
+[![NuGet version](https://badge.fury.io/nu/VContainerAnalyzer.svg)](https://www.nuget.org/packages/VContainerAnalyzer/)
 
 
-## Getting started
-
-All you have to do is click the <kbd>Use this template</kbd> button.
-
-After using the template to create your blank project, the Template Cleanup workflow will be triggered to override or remove any template-specific configurations, such as the project name, current changelog, etc.
-
-For the last step, you have to manually modify the configuration in the YOUR_ANALYZER_NAME/YOUR_ANALYZER_NAME.csproj
+## Template ToDo list
+- [x] Create a new [Roslyn Analyzer Template][template] project.
+- [ ] Implement diagnostic analyzer
+- [ ] Publish The [NuGet Gallery](https://www.nuget.org/)
 
 
-## License
+---
+Analyzer based on the [Roslyn Analyzer Template][template].
 
-MIT License
-
-
-## How to contribute
-
-Open an issue or create a pull request.
+[template]: https://github.com/DeNA/RoslynAnalyzerTemplate

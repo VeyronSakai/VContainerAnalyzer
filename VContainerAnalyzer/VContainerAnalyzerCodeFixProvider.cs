@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2020-2023 VeyronSakai.
 // This software is released under the MIT License.
 
 using System.Collections.Immutable;
@@ -13,14 +13,14 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Rename;
 
-namespace RoslynAnalyzerTemplate
+namespace VContainerAnalyzer
 {
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(RoslynAnalyzerTemplateCodeFixProvider)), Shared]
-    public class RoslynAnalyzerTemplateCodeFixProvider : CodeFixProvider
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(VContainerAnalyzerCodeFixProvider)), Shared]
+    public class VContainerAnalyzerCodeFixProvider : CodeFixProvider
     {
         public sealed override ImmutableArray<string> FixableDiagnosticIds
         {
-            get { return ImmutableArray.Create(RoslynAnalyzerTemplate.DiagnosticId); }
+            get { return ImmutableArray.Create(VContainerAnalyzer.DiagnosticId); }
         }
 
         public sealed override FixAllProvider GetFixAllProvider()

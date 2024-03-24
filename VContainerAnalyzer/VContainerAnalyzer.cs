@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2020-2023 VeyronSakai.
 // This software is released under the MIT License.
 
 using System.Collections.Immutable;
@@ -6,12 +6,12 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace RoslynAnalyzerTemplate;
+namespace VContainerAnalyzer;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class RoslynAnalyzerTemplate : DiagnosticAnalyzer
+public class VContainerAnalyzer : DiagnosticAnalyzer
 {
-    internal const string DiagnosticId = "RoslynAnalyzerTemplate0001";
+    internal const string DiagnosticId = "VContainerAnalyzer0001";
 
     private static readonly DiagnosticDescriptor s_rule = new DiagnosticDescriptor(
         id: DiagnosticId,
