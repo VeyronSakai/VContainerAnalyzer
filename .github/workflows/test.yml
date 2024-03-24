@@ -1,4 +1,4 @@
-name: Build
+name: Test
 
 on:
   push:
@@ -13,9 +13,11 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
+  checks: write
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     env:
       DOTNET_VERSION: '7.0.x'
@@ -28,7 +30,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Test
-        run: dotnet test --logger junit --results-directory "TestResults-${{ env.DOTNET_VERSION }}"
+        run: dotnet test --logger "trx;LogFileName=result.xml" --verbosity normal --results-directory "TestResults-${{ env.DOTNET_VERSION }}"
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -37,11 +39,10 @@ jobs:
           path: TestResults-${{ env.DOTNET_VERSION }}
         if: ${{ always() }}
 
-      - name: Create the package
-        run: dotnet pack --configuration Release
-
-      - name: Upload package
-        uses: actions/upload-artifact@v4
+      - name: Report test results
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
         with:
-          name: dotnet-package-${{ env.DOTNET_VERSION }}
-          path: ./**/*.nupkg
+          name: Test Report
+          path: "**/TestResults-${{ env.DOTNET_VERSION }}/*.xml"
+          reporter: dotnet-trx
