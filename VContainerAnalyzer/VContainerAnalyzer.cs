@@ -88,9 +88,11 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        context.ReportDiagnostic(
-            Diagnostic.Create(s_rule, GetMethodLocation(invocation), concreteType.Name)
-        );
+        var location = GetMethodLocation(invocation);
+        if (location != default)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(s_rule, location, concreteType.Name));
+        }
     }
 
     private static void CheckRegisterEntryPointMethod(ref OperationAnalysisContext context,
