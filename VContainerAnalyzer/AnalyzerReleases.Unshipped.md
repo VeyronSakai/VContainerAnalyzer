@@ -3,6 +3,6 @@
 
 ### New Rules
 
-Rule ID | Category | Severity | Notes
---------|----------|----------|-------
-VContainerAnalyzer0001 | Naming   | Warning  | Sample
+| Rule ID        | Category | Severity | Notes              |
+|----------------|----------|----------|--------------------|
+| VContainer0001 | Usage    | Error    | VContainerAnalyzer |
