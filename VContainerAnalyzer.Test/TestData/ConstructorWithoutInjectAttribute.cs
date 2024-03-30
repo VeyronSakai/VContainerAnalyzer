@@ -5,11 +5,15 @@ using System;
 
 namespace VContainerAnalyzer.Test.TestData
 {
-    public class ConstructorWithoutInjectAttributeClass
+    public class ConstructorWithoutInjectAttributeClass : IInterface
     {
         public ConstructorWithoutInjectAttributeClass()
         {
             Console.WriteLine("");
         }
+    }
+
+    public interface IInterface
+    {
     }
 }

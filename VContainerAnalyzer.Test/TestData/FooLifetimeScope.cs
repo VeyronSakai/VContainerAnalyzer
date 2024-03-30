@@ -15,6 +15,7 @@ namespace VContainerAnalyzer.Test.TestData
             builder.RegisterEntryPoint<ConstructorWithoutInjectAttributeClass>();
             builder.RegisterEntryPoint<ConstructorWithoutInjectAttributeClass>(Lifetime.Singleton);
             builder.Register<ConstructorWithoutInjectAttributeClass>(Lifetime.Singleton);
+            builder.Register<IInterface, ConstructorWithoutInjectAttributeClass>(Lifetime.Singleton);
         }
     }
 }

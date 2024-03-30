@@ -55,24 +55,30 @@ public class VContainerAnalyzerTest
                     "The constructor of 'ConstructorWithoutInjectAttributeClass' does not have InjectAttribute."));
         });
 
-        Assert.That(actual, Has.Length.EqualTo(3));
+        Assert.That(actual, Has.Length.EqualTo(4));
 
         LocationAssert.HaveTheSpan(
-            new LinePosition(14, 38),
-            new LinePosition(14, 78),
+            new LinePosition(14, 39),
+            new LinePosition(14, 77),
             actual[0].Location
         );
 
         LocationAssert.HaveTheSpan(
-            new LinePosition(15, 38),
-            new LinePosition(15, 78),
+            new LinePosition(15, 39),
+            new LinePosition(15, 77),
             actual[1].Location
         );
-        
+
         LocationAssert.HaveTheSpan(
-            new LinePosition(16, 28),
-            new LinePosition(16, 68),
+            new LinePosition(16, 29),
+            new LinePosition(16, 67),
             actual[2].Location
+        );
+
+        LocationAssert.HaveTheSpan(
+            new LinePosition(17, 41),
+            new LinePosition(17, 79),
+            actual[3].Location
         );
     }
 

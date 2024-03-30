@@ -1,8 +1,6 @@
 ﻿// Copyright (c) 2020-2023 VeyronSakai.
 // This software is released under the MIT License.
 
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -113,26 +111,29 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        context.ReportDiagnostic(
-            Diagnostic.Create(s_rule, GetMethodLocation(invocation), concreteType.Name)
-        );
+        var location = GetMethodLocation(invocation);
+        if (location != default)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(s_rule, location, concreteType.Name));
+        }
     }
 
-    private static Location GetMethodLocation(IOperation operation)
+    private static Location? GetMethodLocation(IOperation operation)
     {
         var memberAccessExpressionNode = operation.Syntax.ChildNodes().FirstOrDefault();
         if (memberAccessExpressionNode == null)
         {
-            return operation.Syntax.GetLocation();
+            return default;
         }
 
         var methodNameNode = memberAccessExpressionNode.ChildNodes().LastOrDefault();
-        if (methodNameNode == null)
+        var genericNode = methodNameNode?.ChildNodes().FirstOrDefault();
+        if (genericNode == null)
         {
-            return operation.Syntax.GetLocation();
+            return default;
         }
 
-        var typeArgumentNode = methodNameNode.ChildNodes().FirstOrDefault();
+        var typeArgumentNode = genericNode.ChildNodes().LastOrDefault();
         return typeArgumentNode == null ? operation.Syntax.GetLocation() : typeArgumentNode.GetLocation();
     }
 
