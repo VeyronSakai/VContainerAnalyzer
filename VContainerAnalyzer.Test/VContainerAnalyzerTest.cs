@@ -12,10 +12,6 @@ using Assert = NUnit.Framework.Assert;
 
 namespace VContainerAnalyzer.Test;
 
-/// <summary>
-/// This test is an examples of using the Dena.CodeAnalysis.Testing test helper library.
-/// <see href="https://github.com/VeyronSakai/Dena.CodeAnalysis.Testing"/>
-/// </summary>
 [TestFixture]
 public class VContainerAnalyzerTest
 {
@@ -32,13 +28,16 @@ public class VContainerAnalyzerTest
         Assert.That(diagnostics, Is.Empty);
     }
 
-    /// <summary>
-    /// Test analyze for containing lowercase type name in source code
-    /// </summary>
     [Test]
-    public async Task TypeNameContainingLowercase_ReportOneDiagnostic()
+    public async ValueTask ConstructorWithoutInjectAttribute_ReportOneDiagnostic()
     {
-        var source = ReadCodes("TypeNameContainingLowercase.cs");
+        const string VContainerDirectory = "VContainer";
+        var source = ReadCodes("ConstructorWithoutInjectAttribute.cs",
+            $"{Path.Combine(VContainerDirectory, "Container.cs")}",
+            $"{Path.Combine(VContainerDirectory, "ContainerBuilder.cs")}",
+            $"{Path.Combine(VContainerDirectory, "ContainerBuilderUnityExtensions.cs")}",
+            "FooLifetimeScope.cs");
+
         var analyzer = new VContainerAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
@@ -48,12 +47,16 @@ public class VContainerAnalyzerTest
             .ToArray();
 
         Assert.That(actual, Has.Length.EqualTo(1));
-        Assert.That(actual.First().Id, Is.EqualTo("VContainerAnalyzer0001"));
-        Assert.That(actual.First().GetMessage(), Is.EqualTo("Type name 'TypeName' contains lowercase letters"));
-
+        Assert.Multiple(() =>
+        {
+            Assert.That(actual.Single().Id, Is.EqualTo("VContainer0001"));
+            Assert.That(actual.Single().GetMessage(),
+                Is.EqualTo(
+                    "The constructor of 'ConstructorWithoutInjectAttributeClass' does not have InjectAttribute"));
+        });
         LocationAssert.HaveTheSpan(
-            new LinePosition(12, 10),
-            new LinePosition(12, 18),
+            new LinePosition(14, 38),
+            new LinePosition(14, 78),
             actual.First().Location
         );
     }
