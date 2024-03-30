@@ -52,7 +52,7 @@ public class VContainerAnalyzerTest
             Assert.That(actual.Single().Id, Is.EqualTo("VContainer0001"));
             Assert.That(actual.Single().GetMessage(),
                 Is.EqualTo(
-                    "The constructor of 'ConstructorWithoutInjectAttributeClass' does not have InjectAttribute"));
+                    "The constructor of 'ConstructorWithoutInjectAttributeClass' does not have InjectAttribute."));
         });
         LocationAssert.HaveTheSpan(
             new LinePosition(14, 38),

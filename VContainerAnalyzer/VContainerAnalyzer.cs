@@ -12,9 +12,9 @@ using Microsoft.CodeAnalysis.Operations;
 namespace VContainerAnalyzer;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class VContainerAnalyzer : DiagnosticAnalyzer
+public sealed class VContainerAnalyzer : DiagnosticAnalyzer
 {
-    internal const string DiagnosticId = "VContainer0001";
+    private const string DiagnosticId = "VContainer0001";
 
     private static readonly DiagnosticDescriptor s_rule = new(
         id: DiagnosticId,
@@ -101,12 +101,7 @@ public class VContainerAnalyzer : DiagnosticAnalyzer
         }
 
         var typeArgumentNode = methodNameNode.ChildNodes().FirstOrDefault();
-        if (typeArgumentNode == null)
-        {
-            return operation.Syntax.GetLocation();
-        }
-
-        return typeArgumentNode.GetLocation();
+        return typeArgumentNode == null ? operation.Syntax.GetLocation() : typeArgumentNode.GetLocation();
     }
 
     private static bool Reports(INamedTypeSymbol type)
@@ -118,7 +113,7 @@ public class VContainerAnalyzer : DiagnosticAnalyzer
 
         return !HasPreservedConstructors(type);
     }
-
+    
     private static bool HasPreservedConstructors(INamedTypeSymbol type)
     {
         return type.Constructors.Any(ctor =>
