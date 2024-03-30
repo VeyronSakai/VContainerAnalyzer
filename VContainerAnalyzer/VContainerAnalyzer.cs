@@ -18,8 +18,8 @@ public class VContainerAnalyzer : DiagnosticAnalyzer
 
     private static readonly DiagnosticDescriptor s_rule = new(
         id: DiagnosticId,
-        title: "Constructor does not have InjectAttribute",
-        messageFormat: "The constructor of '{0}' does not have InjectAttribute",
+        title: "Constructor does not have InjectAttribute.",
+        messageFormat: "The constructor of '{0}' does not have InjectAttribute.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
