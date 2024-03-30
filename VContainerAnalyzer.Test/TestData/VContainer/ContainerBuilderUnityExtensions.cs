@@ -2,6 +2,7 @@
 // This software is released under the MIT License.
 
 // ReSharper disable once CheckNamespace
+
 namespace VContainer.Unity
 {
     public static class ContainerBuilderUnityExtensions
@@ -15,6 +16,12 @@ namespace VContainer.Unity
             this IContainerBuilder builder,
             Lifetime lifetime)
             where TImplement : TInterface
+        {
+            return new RegistrationBuilder();
+        }
+
+        public static RegistrationBuilder Register<TInterface1, TInterface2, TImplement>(this IContainerBuilder builder,
+            Lifetime lifetime) where TImplement : TInterface1, TInterface2
         {
             return new RegistrationBuilder();
         }

@@ -55,31 +55,25 @@ public class VContainerAnalyzerTest
                     "The constructor of 'ConstructorWithoutInjectAttributeClass' does not have InjectAttribute."));
         });
 
-        Assert.That(actual, Has.Length.EqualTo(4));
+        var expectedPositions = new[]
+        {
+            new { Start = new LinePosition(14, 39), End = new LinePosition(14, 77) },
+            new { Start = new LinePosition(15, 39), End = new LinePosition(15, 77) },
+            new { Start = new LinePosition(16, 29), End = new LinePosition(16, 67) },
+            new { Start = new LinePosition(17, 42), End = new LinePosition(17, 80) },
+            new { Start = new LinePosition(18, 55), End = new LinePosition(18, 93) },
+        };
 
-        LocationAssert.HaveTheSpan(
-            new LinePosition(14, 39),
-            new LinePosition(14, 77),
-            actual[0].Location
-        );
+        Assert.That(actual, Has.Length.EqualTo(expectedPositions.Length));
 
-        LocationAssert.HaveTheSpan(
-            new LinePosition(15, 39),
-            new LinePosition(15, 77),
-            actual[1].Location
-        );
-
-        LocationAssert.HaveTheSpan(
-            new LinePosition(16, 29),
-            new LinePosition(16, 67),
-            actual[2].Location
-        );
-
-        LocationAssert.HaveTheSpan(
-            new LinePosition(17, 41),
-            new LinePosition(17, 79),
-            actual[3].Location
-        );
+        for (var i = 0; i < expectedPositions.Length; i++)
+        {
+            LocationAssert.HaveTheSpan(
+                expectedPositions[i].Start,
+                expectedPositions[i].End,
+                actual[i].Location
+            );
+        }
     }
 
     private static string[] ReadCodes(params string[] sources)
