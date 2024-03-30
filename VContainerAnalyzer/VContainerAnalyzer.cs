@@ -61,29 +61,39 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        var diagnostics = GetDiagnostics(invocation);
-        foreach (var diagnostic in diagnostics)
+
+        switch (invocation.TargetMethod.Name)
         {
-            context.ReportDiagnostic(diagnostic);
+            case "RegisterEntryPoint":
+                CheckRegisterEntry(ref context, invocation);
+                break;
+            // case "Register":
+            //     GetRegisterEntryPointDiagnostics(ref context, invocation);
+            //     break;
         }
     }
 
-    private static IEnumerable<Diagnostic> GetDiagnostics(IInvocationOperation invocation) =>
-        invocation.TargetMethod.Name switch
-        {
-            "RegisterEntryPoint" => GetRegisterEntryPointDiagnostics(invocation),
-            _ => Array.Empty<Diagnostic>(),
-        };
-
-    private static IEnumerable<Diagnostic> GetRegisterEntryPointDiagnostics(IInvocationOperation invocation)
+    private static void CheckRegisterEntry(ref OperationAnalysisContext context,
+        IInvocationOperation invocation)
     {
-        if (invocation.TargetMethod.TypeArguments.SingleOrDefault() is INamedTypeSymbol concreteType &&
-            Reports(concreteType))
+        if (invocation.TargetMethod.TypeArguments.LastOrDefault() is not INamedTypeSymbol concreteType)
         {
-            return new[] { Diagnostic.Create(s_rule, GetMethodLocation(invocation), concreteType.Name), };
+            return;
         }
 
-        return Array.Empty<Diagnostic>();
+        if (concreteType.TypeKind != TypeKind.Class)
+        {
+            return;
+        }
+
+        if (HasPreservedConstructors(concreteType))
+        {
+            return;
+        }
+
+        context.ReportDiagnostic(
+            Diagnostic.Create(s_rule, GetMethodLocation(invocation), concreteType.Name)
+        );
     }
 
     private static Location GetMethodLocation(IOperation operation)
@@ -104,16 +114,6 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
         return typeArgumentNode == null ? operation.Syntax.GetLocation() : typeArgumentNode.GetLocation();
     }
 
-    private static bool Reports(INamedTypeSymbol type)
-    {
-        if (type.TypeKind != TypeKind.Class)
-        {
-            return false;
-        }
-
-        return !HasPreservedConstructors(type);
-    }
-    
     private static bool HasPreservedConstructors(INamedTypeSymbol type)
     {
         return type.Constructors.Any(ctor =>
