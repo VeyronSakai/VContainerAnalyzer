@@ -36,6 +36,7 @@ public class VContainerAnalyzerTest
             $"{Path.Combine(VContainerDirectory, "Container.cs")}",
             $"{Path.Combine(VContainerDirectory, "ContainerBuilder.cs")}",
             $"{Path.Combine(VContainerDirectory, "ContainerBuilderUnityExtensions.cs")}",
+            $"{Path.Combine(VContainerDirectory, "RegistrationBuilder.cs")}",
             "FooLifetimeScope.cs");
 
         var analyzer = new VContainerAnalyzer();
@@ -46,18 +47,32 @@ public class VContainerAnalyzerTest
             .Where(x => x.Id != "CS8019") // Ignore "Unnecessary using directive"
             .ToArray();
 
-        Assert.That(actual, Has.Length.EqualTo(1));
         Assert.Multiple(() =>
         {
-            Assert.That(actual.Single().Id, Is.EqualTo("VContainer0001"));
-            Assert.That(actual.Single().GetMessage(),
+            Assert.That(actual.First().Id, Is.EqualTo("VContainer0001"));
+            Assert.That(actual.First().GetMessage(),
                 Is.EqualTo(
                     "The constructor of 'ConstructorWithoutInjectAttributeClass' does not have InjectAttribute."));
         });
+
+        Assert.That(actual, Has.Length.EqualTo(3));
+
         LocationAssert.HaveTheSpan(
             new LinePosition(14, 38),
             new LinePosition(14, 78),
-            actual.First().Location
+            actual[0].Location
+        );
+
+        LocationAssert.HaveTheSpan(
+            new LinePosition(15, 38),
+            new LinePosition(15, 78),
+            actual[1].Location
+        );
+        
+        LocationAssert.HaveTheSpan(
+            new LinePosition(16, 28),
+            new LinePosition(16, 68),
+            actual[2].Location
         );
     }
 

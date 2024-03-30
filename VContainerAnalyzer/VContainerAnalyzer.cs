@@ -61,22 +61,44 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-
         switch (invocation.TargetMethod.Name)
         {
-            case "RegisterEntryPoint":
-                CheckRegisterEntry(ref context, invocation);
+            case "Register":
+                CheckRegisterMethod(ref context, invocation);
                 break;
-            // case "Register":
-            //     GetRegisterEntryPointDiagnostics(ref context, invocation);
-            //     break;
+            case "RegisterEntryPoint":
+                CheckRegisterEntryPointMethod(ref context, invocation);
+                break;
         }
     }
 
-    private static void CheckRegisterEntry(ref OperationAnalysisContext context,
+    private static void CheckRegisterMethod(ref OperationAnalysisContext context, IInvocationOperation invocation)
+    {
+        var typeArgument = invocation.TargetMethod.TypeArguments.LastOrDefault();
+        if (typeArgument is not INamedTypeSymbol concreteType)
+        {
+            return;
+        }
+
+        if (concreteType.TypeKind != TypeKind.Class)
+        {
+            return;
+        }
+
+        if (HasPreservedConstructors(concreteType))
+        {
+            return;
+        }
+
+        context.ReportDiagnostic(
+            Diagnostic.Create(s_rule, GetMethodLocation(invocation), concreteType.Name)
+        );
+    }
+
+    private static void CheckRegisterEntryPointMethod(ref OperationAnalysisContext context,
         IInvocationOperation invocation)
     {
-        if (invocation.TargetMethod.TypeArguments.LastOrDefault() is not INamedTypeSymbol concreteType)
+        if (invocation.TargetMethod.TypeArguments.SingleOrDefault() is not INamedTypeSymbol concreteType)
         {
             return;
         }

@@ -13,6 +13,8 @@ namespace VContainerAnalyzer.Test.TestData
         public void Configure(IContainerBuilder builder)
         {
             builder.RegisterEntryPoint<ConstructorWithoutInjectAttributeClass>();
+            builder.RegisterEntryPoint<ConstructorWithoutInjectAttributeClass>(Lifetime.Singleton);
+            builder.Register<ConstructorWithoutInjectAttributeClass>(Lifetime.Singleton);
         }
     }
 }

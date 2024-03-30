@@ -6,8 +6,15 @@ namespace VContainer.Unity
 {
     public static class ContainerBuilderUnityExtensions
     {
-        public static void RegisterEntryPoint<T>(this IContainerBuilder builder, Lifetime lifetime = Lifetime.Singleton)
+        public static RegistrationBuilder Register<T>(this IContainerBuilder builder, Lifetime lifetime)
         {
+            return new RegistrationBuilder();
+        }
+
+        public static RegistrationBuilder RegisterEntryPoint<T>(this IContainerBuilder builder,
+            Lifetime lifetime = Lifetime.Singleton)
+        {
+            return new RegistrationBuilder();
         }
     }
 }
