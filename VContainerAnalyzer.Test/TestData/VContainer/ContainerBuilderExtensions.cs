@@ -38,6 +38,7 @@ namespace VContainer
             this IContainerBuilder builder,
             Func<IObjectResolver, TInterface> implementationConfiguration,
             Lifetime lifetime)
+            where TInterface : class
         {
             return new RegistrationBuilder();
         }

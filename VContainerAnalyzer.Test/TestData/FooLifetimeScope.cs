@@ -19,7 +19,8 @@ namespace VContainerAnalyzer.Test.TestData
             builder.Register<IInterface1, IInterface2, ConstructorWithoutInjectAttributeClass>(Lifetime.Singleton);
             builder.Register<IInterface1, IInterface2, IInterface3, ConstructorWithoutInjectAttributeClass>(
                 Lifetime.Singleton);
-            builder.Register<IInterface1>(_ => new ConstructorWithoutInjectAttributeClass(), Lifetime.Singleton);
+            builder.Register<ConstructorWithoutInjectAttributeClass>(_ => new ConstructorWithoutInjectAttributeClass(),
+                Lifetime.Singleton);
         }
     }
 }

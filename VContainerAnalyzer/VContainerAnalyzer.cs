@@ -104,28 +104,20 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        if (concreteType.TypeKind == TypeKind.Class)
+        if (concreteType.TypeKind != TypeKind.Class)
         {
-            if (HasPreservedConstructors(concreteType))
-            {
-                return;
-            }
-
-            var location = GetMethodLocation(invocation);
-            if (location != default)
-            {
-                context.ReportDiagnostic(Diagnostic.Create(s_rule, location, concreteType.Name));
-            }
+            return;
         }
-        else if (concreteType.TypeKind == TypeKind.Interface)
-        {
-            var parameter = invocation.TargetMethod.Parameters.ElementAtOrDefault(1);
-            if (parameter == null)
-            {
-                return;
-            }
 
-            // if(parameter.Type == typeof(Func<>))
+        if (HasPreservedConstructors(concreteType))
+        {
+            return;
+        }
+
+        var location = GetMethodLocation(invocation);
+        if (location != default)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(s_rule, location, concreteType.Name));
         }
     }
 
