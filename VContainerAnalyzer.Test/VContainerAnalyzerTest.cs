@@ -35,7 +35,9 @@ public class VContainerAnalyzerTest
         var source = ReadCodes("ConstructorWithoutInjectAttribute.cs",
             $"{Path.Combine(VContainerDirectory, "Container.cs")}",
             $"{Path.Combine(VContainerDirectory, "ContainerBuilder.cs")}",
+            $"{Path.Combine(VContainerDirectory, "ContainerBuilderExtensions.cs")}",
             $"{Path.Combine(VContainerDirectory, "ContainerBuilderUnityExtensions.cs")}",
+            $"{Path.Combine(VContainerDirectory, "RegistrationBuilder.cs")}",
             "FooLifetimeScope.cs");
 
         var analyzer = new VContainerAnalyzer();
@@ -46,19 +48,39 @@ public class VContainerAnalyzerTest
             .Where(x => x.Id != "CS8019") // Ignore "Unnecessary using directive"
             .ToArray();
 
-        Assert.That(actual, Has.Length.EqualTo(1));
         Assert.Multiple(() =>
         {
-            Assert.That(actual.Single().Id, Is.EqualTo("VContainer0001"));
-            Assert.That(actual.Single().GetMessage(),
+            Assert.That(actual.First().Id, Is.EqualTo("VContainer0001"));
+            Assert.That(actual.First().GetMessage(),
                 Is.EqualTo(
                     "The constructor of 'ConstructorWithoutInjectAttributeClass' does not have InjectAttribute."));
         });
-        LocationAssert.HaveTheSpan(
-            new LinePosition(14, 38),
-            new LinePosition(14, 78),
-            actual.First().Location
-        );
+
+        var expectedPositions = new[]
+        {
+            new { Start = new LinePosition(14, 39), End = new LinePosition(14, 77) },
+            new { Start = new LinePosition(15, 39), End = new LinePosition(15, 77) },
+            new { Start = new LinePosition(16, 29), End = new LinePosition(16, 67) },
+            new { Start = new LinePosition(17, 42), End = new LinePosition(17, 80) },
+            new { Start = new LinePosition(18, 55), End = new LinePosition(18, 93) },
+            new { Start = new LinePosition(19, 68), End = new LinePosition(19, 106) },
+            new { Start = new LinePosition(21, 29), End = new LinePosition(21, 67) },
+            new { Start = new LinePosition(23, 29), End = new LinePosition(23, 67) },
+            new { Start = new LinePosition(24, 37), End = new LinePosition(24, 75) },
+            new { Start = new LinePosition(26, 36), End = new LinePosition(26, 82) },
+            new { Start = new LinePosition(29, 36), End = new LinePosition(29, 46) },
+        };
+
+        Assert.That(actual, Has.Length.EqualTo(expectedPositions.Length));
+
+        for (var i = 0; i < expectedPositions.Length; i++)
+        {
+            LocationAssert.HaveTheSpan(
+                expectedPositions[i].Start,
+                expectedPositions[i].End,
+                actual[i].Location
+            );
+        }
     }
 
     private static string[] ReadCodes(params string[] sources)
