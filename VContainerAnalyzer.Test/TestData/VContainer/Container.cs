@@ -10,4 +10,8 @@ namespace VContainer
         Singleton,
         Scoped
     }
+    
+    public interface IObjectResolver
+    {
+    }
 }

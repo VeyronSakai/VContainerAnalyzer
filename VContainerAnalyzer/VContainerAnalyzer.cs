@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2020-2023 VeyronSakai.
 // This software is released under the MIT License.
 
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -37,37 +38,62 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
         var invocation = (IInvocationOperation)context.Operation;
         var methodSymbol = invocation.TargetMethod;
         var namespaceSymbol = methodSymbol.ContainingNamespace;
+        if (IsContainerBuilderUnityExtensions(namespaceSymbol, methodSymbol))
+        {
+            switch (invocation.TargetMethod.Name)
+            {
+                case "RegisterEntryPoint":
+                    CheckRegisterEntryPointMethod(ref context, invocation);
+                    break;
+            }
+        }
+        else if (IsContainerBuilderExtensions(namespaceSymbol, methodSymbol))
+        {
+            switch (invocation.TargetMethod.Name)
+            {
+                case "Register":
+                    CheckRegisterMethod(ref context, invocation);
+                    break;
+            }
+        }
+    }
+
+    private static bool IsContainerBuilderUnityExtensions(INamespaceSymbol namespaceSymbol, IMethodSymbol methodSymbol)
+    {
         if (namespaceSymbol is not { Name: "Unity" })
         {
-            return;
+            return false;
         }
 
         namespaceSymbol = namespaceSymbol.ContainingNamespace;
         if (namespaceSymbol is not { Name: "VContainer" })
         {
-            return;
+            return false;
         }
 
         namespaceSymbol = namespaceSymbol.ContainingNamespace;
         if (namespaceSymbol is not { Name: "" })
         {
-            return;
+            return false;
         }
 
-        if (methodSymbol.ContainingType.Name != "ContainerBuilderUnityExtensions")
+        return methodSymbol.ContainingType.Name == "ContainerBuilderUnityExtensions";
+    }
+
+    private static bool IsContainerBuilderExtensions(INamespaceSymbol namespaceSymbol, IMethodSymbol methodSymbol)
+    {
+        if (namespaceSymbol is not { Name: "VContainer" })
         {
-            return;
+            return false;
         }
 
-        switch (invocation.TargetMethod.Name)
+        namespaceSymbol = namespaceSymbol.ContainingNamespace;
+        if (namespaceSymbol is not { Name: "" })
         {
-            case "Register":
-                CheckRegisterMethod(ref context, invocation);
-                break;
-            case "RegisterEntryPoint":
-                CheckRegisterEntryPointMethod(ref context, invocation);
-                break;
+            return false;
         }
+
+        return methodSymbol.ContainingType.Name == "ContainerBuilderExtensions";
     }
 
     private static void CheckRegisterMethod(ref OperationAnalysisContext context, IInvocationOperation invocation)
@@ -78,20 +104,28 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        if (concreteType.TypeKind != TypeKind.Class)
+        if (concreteType.TypeKind == TypeKind.Class)
         {
-            return;
-        }
+            if (HasPreservedConstructors(concreteType))
+            {
+                return;
+            }
 
-        if (HasPreservedConstructors(concreteType))
-        {
-            return;
+            var location = GetMethodLocation(invocation);
+            if (location != default)
+            {
+                context.ReportDiagnostic(Diagnostic.Create(s_rule, location, concreteType.Name));
+            }
         }
-
-        var location = GetMethodLocation(invocation);
-        if (location != default)
+        else if (concreteType.TypeKind == TypeKind.Interface)
         {
-            context.ReportDiagnostic(Diagnostic.Create(s_rule, location, concreteType.Name));
+            var parameter = invocation.TargetMethod.Parameters.ElementAtOrDefault(1);
+            if (parameter == null)
+            {
+                return;
+            }
+
+            // if(parameter.Type == typeof(Func<>))
         }
     }
 

@@ -35,6 +35,7 @@ public class VContainerAnalyzerTest
         var source = ReadCodes("ConstructorWithoutInjectAttribute.cs",
             $"{Path.Combine(VContainerDirectory, "Container.cs")}",
             $"{Path.Combine(VContainerDirectory, "ContainerBuilder.cs")}",
+            $"{Path.Combine(VContainerDirectory, "ContainerBuilderExtensions.cs")}",
             $"{Path.Combine(VContainerDirectory, "ContainerBuilderUnityExtensions.cs")}",
             $"{Path.Combine(VContainerDirectory, "RegistrationBuilder.cs")}",
             "FooLifetimeScope.cs");
