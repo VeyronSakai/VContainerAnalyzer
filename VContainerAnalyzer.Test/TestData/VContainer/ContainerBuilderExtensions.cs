@@ -42,5 +42,12 @@ namespace VContainer
         {
             return new RegistrationBuilder();
         }
+
+        public static RegistrationBuilder RegisterInstance<TInterface>(
+            this IContainerBuilder builder,
+            TInterface instance)
+        {
+            return new RegistrationBuilder();
+        }
     }
 }

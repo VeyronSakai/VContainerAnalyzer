@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2020-2023 VeyronSakai.
 // This software is released under the MIT License.
 
-using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -43,7 +42,7 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
             switch (invocation.TargetMethod.Name)
             {
                 case "RegisterEntryPoint":
-                    CheckRegisterEntryPointMethod(ref context, invocation);
+                    AnalyzeRegisterEntryPointMethod(ref context, invocation);
                     break;
             }
         }
@@ -52,7 +51,10 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
             switch (invocation.TargetMethod.Name)
             {
                 case "Register":
-                    CheckRegisterMethod(ref context, invocation);
+                    AnalyzeRegisterMethod(ref context, invocation);
+                    break;
+                case "RegisterInstance":
+                    AnalyzeRegisterInstanceMethod(ref context, invocation);
                     break;
             }
         }
@@ -96,7 +98,7 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
         return methodSymbol.ContainingType.Name == "ContainerBuilderExtensions";
     }
 
-    private static void CheckRegisterMethod(ref OperationAnalysisContext context, IInvocationOperation invocation)
+    private static void AnalyzeRegisterMethod(ref OperationAnalysisContext context, IInvocationOperation invocation)
     {
         var typeArgument = invocation.TargetMethod.TypeArguments.LastOrDefault();
         if (typeArgument is not INamedTypeSymbol concreteType)
@@ -114,14 +116,55 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        var location = GetMethodLocation(invocation);
-        if (location != default)
+        var typeArgumentLocation = GetTypeArgumentLocation(invocation);
+        if (typeArgumentLocation != default)
         {
-            context.ReportDiagnostic(Diagnostic.Create(s_rule, location, concreteType.Name));
+            context.ReportDiagnostic(Diagnostic.Create(s_rule, typeArgumentLocation, concreteType.Name));
         }
     }
 
-    private static void CheckRegisterEntryPointMethod(ref OperationAnalysisContext context,
+    private static void AnalyzeRegisterInstanceMethod(ref OperationAnalysisContext context,
+        IInvocationOperation invocation)
+    {
+        var typeArgument = invocation.TargetMethod.TypeArguments.LastOrDefault();
+        if (typeArgument is not INamedTypeSymbol concreteType)
+        {
+            return;
+        }
+
+        if (concreteType.TypeKind != TypeKind.Class)
+        {
+            return;
+        }
+
+        if (HasPreservedConstructors(concreteType))
+        {
+            return;
+        }
+
+        Location? targetLocation = default;
+
+        var typeArgumentLocation = GetTypeArgumentLocation(invocation);
+        if (typeArgumentLocation != default)
+        {
+            targetLocation = typeArgumentLocation;
+        }
+        else
+        {
+            var argumentLocation = GetArgumentLocation(invocation);
+            if (argumentLocation != default)
+            {
+                targetLocation = argumentLocation;
+            }
+        }
+
+        if (targetLocation != default)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(s_rule, targetLocation, concreteType.Name));
+        }
+    }
+
+    private static void AnalyzeRegisterEntryPointMethod(ref OperationAnalysisContext context,
         IInvocationOperation invocation)
     {
         if (invocation.TargetMethod.TypeArguments.SingleOrDefault() is not INamedTypeSymbol concreteType)
@@ -139,30 +182,26 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        var location = GetMethodLocation(invocation);
+        var location = GetTypeArgumentLocation(invocation);
         if (location != default)
         {
             context.ReportDiagnostic(Diagnostic.Create(s_rule, location, concreteType.Name));
         }
     }
 
-    private static Location? GetMethodLocation(IOperation operation)
+    private static Location? GetTypeArgumentLocation(IOperation operation)
     {
         var memberAccessExpressionNode = operation.Syntax.ChildNodes().FirstOrDefault();
-        if (memberAccessExpressionNode == null)
-        {
-            return default;
-        }
-
-        var methodNameNode = memberAccessExpressionNode.ChildNodes().LastOrDefault();
+        var methodNameNode = memberAccessExpressionNode?.ChildNodes().LastOrDefault();
         var genericNode = methodNameNode?.ChildNodes().FirstOrDefault();
-        if (genericNode == null)
-        {
-            return default;
-        }
+        var typeArgumentNode = genericNode?.ChildNodes().LastOrDefault();
+        return typeArgumentNode?.GetLocation();
+    }
 
-        var typeArgumentNode = genericNode.ChildNodes().LastOrDefault();
-        return typeArgumentNode == null ? operation.Syntax.GetLocation() : typeArgumentNode.GetLocation();
+    private static Location? GetArgumentLocation(IOperation operation)
+    {
+        var location = operation.Syntax.ChildNodes().ElementAtOrDefault(1);
+        return location?.GetLocation();
     }
 
     private static bool HasPreservedConstructors(INamedTypeSymbol type)
