@@ -26,6 +26,13 @@ namespace VContainer.Unity
             return new RegistrationBuilder();
         }
 
+        public static RegistrationBuilder Register<TInterface1, TInterface2, TInterface3, TImplement>(
+            this IContainerBuilder builder,
+            Lifetime lifetime) where TImplement : TInterface1, TInterface2, TInterface3
+        {
+            return new RegistrationBuilder();
+        }
+
         public static RegistrationBuilder RegisterEntryPoint<T>(this IContainerBuilder builder,
             Lifetime lifetime = Lifetime.Singleton)
         {

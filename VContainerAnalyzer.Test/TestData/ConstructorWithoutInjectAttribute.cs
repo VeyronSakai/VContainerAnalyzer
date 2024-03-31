@@ -5,7 +5,7 @@ using System;
 
 namespace VContainerAnalyzer.Test.TestData
 {
-    public class ConstructorWithoutInjectAttributeClass : IInterface1, IInterface2
+    public class ConstructorWithoutInjectAttributeClass : IInterface1, IInterface2, IInterface3
     {
         public ConstructorWithoutInjectAttributeClass()
         {
@@ -18,6 +18,10 @@ namespace VContainerAnalyzer.Test.TestData
     }
 
     public interface IInterface2
+    {
+    }
+
+    public interface IInterface3
     {
     }
 }
