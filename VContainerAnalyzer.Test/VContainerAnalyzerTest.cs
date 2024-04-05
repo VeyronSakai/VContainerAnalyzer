@@ -66,9 +66,6 @@ public class VContainerAnalyzerTest
             new { Start = new LinePosition(19, 68), End = new LinePosition(19, 106) },
             new { Start = new LinePosition(21, 29), End = new LinePosition(21, 67) },
             new { Start = new LinePosition(23, 29), End = new LinePosition(23, 67) },
-            new { Start = new LinePosition(24, 37), End = new LinePosition(24, 75) },
-            new { Start = new LinePosition(26, 36), End = new LinePosition(26, 82) },
-            new { Start = new LinePosition(29, 36), End = new LinePosition(29, 46) },
         };
 
         Assert.That(actual, Has.Length.EqualTo(expectedPositions.Length));

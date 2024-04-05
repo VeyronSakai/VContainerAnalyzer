@@ -53,9 +53,6 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
                 case "Register":
                     AnalyzeRegisterMethod(ref context, invocation);
                     break;
-                case "RegisterInstance":
-                    AnalyzeRegisterInstanceMethod(ref context, invocation);
-                    break;
             }
         }
     }
@@ -111,22 +108,20 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        if (HasPreservedConstructors(concreteType))
+        if (HasConstructorWithPreserveAttribute(concreteType) || !HasCustomConstructor(concreteType))
         {
             return;
         }
 
         var typeArgumentLocation = GetTypeArgumentLocation(invocation);
-        if (typeArgumentLocation != default)
-        {
-            context.ReportDiagnostic(Diagnostic.Create(s_rule, typeArgumentLocation, concreteType.Name));
-        }
+        var targetLocation = typeArgumentLocation == default ? invocation.Syntax.GetLocation() : typeArgumentLocation;
+        context.ReportDiagnostic(Diagnostic.Create(s_rule, targetLocation, concreteType.Name));
     }
 
     private static void AnalyzeRegisterInstanceMethod(ref OperationAnalysisContext context,
         IInvocationOperation invocation)
     {
-        var typeArgument = invocation.TargetMethod.TypeArguments.LastOrDefault();
+        var typeArgument = invocation.TargetMethod.TypeArguments.FirstOrDefault();
         if (typeArgument is not INamedTypeSymbol concreteType)
         {
             return;
@@ -137,7 +132,7 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        if (HasPreservedConstructors(concreteType))
+        if (HasConstructorWithPreserveAttribute(concreteType) || !HasCustomConstructor(concreteType))
         {
             return;
         }
@@ -177,7 +172,7 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        if (HasPreservedConstructors(concreteType))
+        if (HasConstructorWithPreserveAttribute(concreteType) || !HasCustomConstructor(concreteType))
         {
             return;
         }
@@ -204,12 +199,50 @@ public sealed class VContainerAnalyzer : DiagnosticAnalyzer
         return location?.GetLocation();
     }
 
-    private static bool HasPreservedConstructors(INamedTypeSymbol type)
+    private static bool HasCustomConstructor(INamedTypeSymbol type)
     {
-        return type.Constructors.Any(ctor =>
+        return type.Constructors.Any(methodSymbol => !IsDefaultConstructor(methodSymbol));
+    }
+
+    private static bool IsDefaultConstructor(IMethodSymbol constructor)
+    {
+        if (constructor.IsImplicitlyDeclared)
         {
-            return ctor.GetAttributes().Any(x => InheritsPreserveAttribute(x.AttributeClass));
-        });
+            return true;
+        }
+
+        if (!constructor.Parameters.IsEmpty)
+        {
+            return false;
+        }
+
+        var syntaxReference = constructor.DeclaringSyntaxReferences.FirstOrDefault();
+        var methodBlockNode = syntaxReference?.GetSyntax().ChildNodes().LastOrDefault();
+        if (methodBlockNode == null)
+        {
+            return true;
+        }
+
+        var methodContentNodes = methodBlockNode.ChildNodes();
+        return !methodContentNodes.Any();
+    }
+
+    private static bool HasConstructorWithPreserveAttribute(INamedTypeSymbol type)
+    {
+        // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+        foreach (var constructor in type.Constructors)
+        {
+            // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+            foreach (var attribute in constructor.GetAttributes())
+            {
+                if (InheritsPreserveAttribute(attribute.AttributeClass))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private static bool InheritsPreserveAttribute(ITypeSymbol attributeClass)

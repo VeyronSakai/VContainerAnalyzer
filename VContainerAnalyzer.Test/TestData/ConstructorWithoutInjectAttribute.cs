@@ -13,6 +13,17 @@ namespace VContainerAnalyzer.Test.TestData
         }
     }
 
+    public sealed class NoConstructorClass : IInterface4
+    {
+        public NoConstructorClass()
+        {
+        }
+
+        public void Method()
+        {
+        }
+    }
+
     public interface IInterface1
     {
     }
@@ -23,5 +34,10 @@ namespace VContainerAnalyzer.Test.TestData
 
     public interface IInterface3
     {
+    }
+    
+    public interface IInterface4
+    {
+        void Method();
     }
 }
