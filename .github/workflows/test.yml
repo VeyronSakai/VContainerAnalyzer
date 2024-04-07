@@ -17,6 +17,7 @@ permissions:
 
 jobs:
   test:
+    name: test
     runs-on: ubuntu-latest
     env:
       DOTNET_VERSION: '7.0.x'
