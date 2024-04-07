@@ -5,16 +5,17 @@ on:
     branches:
       - main
   pull_request:
-    types: [ opened, synchronize, reopened ]  # Same as default
+    types: [opened, synchronize, reopened] # Same as default
 
 permissions:
   contents: read
 
 jobs:
   paths:
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     outputs:
-      action: ${{ (github.event_name == 'pull_request' && steps.filter.outputs.action) || github.event_name == 'push' }}
+      action: ${{ steps.filter.outputs.action }}
     steps:
       - uses: dorny/paths-filter@v3
         id: filter
@@ -25,7 +26,7 @@ jobs:
 
   action:
     needs: paths
-    if: ${{ needs.paths.outputs.action == 'true' }}
+    if: ${{ needs.paths.outputs.action == 'true' || github.event_name == 'push'}}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
