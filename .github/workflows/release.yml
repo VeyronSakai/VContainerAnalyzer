@@ -1,0 +1,75 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  update_release_draft:
+    name: update release draft
+    runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.release_drafter.outputs.tag_name }}
+    steps:
+      - uses: release-drafter/release-drafter@v5
+        id: release_drafter
+        with:
+          commitish: main
+
+  release:
+    name: release
+    environment: release
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    needs: update_release_draft
+    env:
+      VERSION: ${{ needs.update_release_draft.outputs.tag_name }}
+    steps:
+      - uses: release-drafter/release-drafter@v5
+        id: release-drafter
+        with:
+          publish: true
+          commitish: main
+      - name: Create semver outputs
+        uses: actions/github-script@v6
+        id: semver
+        with:
+          script: |
+            const matched = "${{ env.VERSION }}".match(/(((\d+)\.\d+).\d+)/)
+            core.setOutput('major', matched[3])
+            core.setOutput('minor', matched[2])
+            core.setOutput('patch', matched[1])
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.VERSION }}
+      - name: Update major tag
+        if: steps.semver.outputs.major != '0'
+        run: |
+          git push -f origin "refs/tags/${VERSION}:refs/tags/${{ steps.semver.outputs.major }}"
+      - name: Update minor tag
+        if: steps.semver.outputs.minor != '0.0'
+        run: |
+          git push -f origin "refs/tags/${VERSION}:refs/tags/${{ steps.semver.outputs.minor }}"
+      - name: Execute dotnet pack
+        run: |
+          dotnet pack ./VContainerAnalyzer/VContainerAnalyzer.csproj \
+            -c Release \
+            -p:Version="${VERSION}" \
+            -p:PackageVersion="${VERSION}" \
+            -o .
+      - name: Push to NuGet
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push "VContainerAnalyzer.${VERSION}.nupkg" \
+            -s https://api.nuget.org/v3/index.json \
+            -k "${NUGET_API_KEY}"
