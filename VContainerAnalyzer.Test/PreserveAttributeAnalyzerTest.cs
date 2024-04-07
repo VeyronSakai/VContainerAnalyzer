@@ -211,4 +211,23 @@ public class PreserveAttributeAnalyzerTest
 
         Assert.That(actual.Length, Is.EqualTo(0));
     }
+
+    [Test]
+    public async ValueTask AnalyzeRegisterMethod_ConstructorHasInjectAttribute_ReportNoDiagnostics()
+    {
+        var source = ReadCodes("ConstructorWithInjectAttributeClass.cs",
+            "EmptyClassStub.cs",
+            "Interfaces.cs",
+            "RegisterConstructorWithInjectAttributeClassLifetimeScope.cs");
+
+        var analyzer = new PreserveAttributeAnalyzer();
+        var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
+
+        var actual = diagnostics
+            .Where(x => x.Id != "CS1591") // Ignore "Missing XML comment for publicly visible type or member"
+            .Where(x => x.Id != "CS8019") // Ignore "Unnecessary using directive"
+            .ToArray();
+
+        Assert.That(actual.Length, Is.EqualTo(0));
+    }
 }

@@ -6,7 +6,7 @@ using VContainer;
 
 namespace VContainerAnalyzer.Test.TestData
 {
-    public class ConstructorWithInjectAttributeClass
+    public class ConstructorWithInjectAttributeClass : IInterface1, IInterface2, IInterface3
     {
         [Inject]
         public ConstructorWithInjectAttributeClass(EmptyClassStub stub1, EmptyClassStub stub2)
