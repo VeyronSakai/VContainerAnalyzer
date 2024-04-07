@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Dena.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Text;
 using NUnit.Framework;
+using VContainerAnalyzer.Analyzers;
 using Assert = NUnit.Framework.Assert;
 
 namespace VContainerAnalyzer.Test;
@@ -229,5 +230,43 @@ public class PreserveAttributeAnalyzerTest
             .ToArray();
 
         Assert.That(actual.Length, Is.EqualTo(0));
+    }
+
+    [Test]
+    public async ValueTask AnalyzeAddMethod_ConstructorDoesNotHaveInjectAttribute_ReportDiagnostics()
+    {
+        var source = ReadCodes("ConstructorWithoutInjectAttributeClass.cs",
+            "EmptyClassStub.cs",
+            "Interfaces.cs",
+            "AddConstructorWithoutInjectAttributeClassLifetimeScope.cs");
+
+        var analyzer = new PreserveAttributeAnalyzer();
+        var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
+
+        var actual = diagnostics
+            .Where(x => x.Id != "CS1591") // Ignore "Missing XML comment for publicly visible type or member"
+            .Where(x => x.Id != "CS8019") // Ignore "Unnecessary using directive"
+            .ToArray();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(actual.First().Id, Is.EqualTo("VContainer0001"));
+            Assert.That(actual.First().GetMessage(),
+                Is.EqualTo(
+                    "The constructor of 'ConstructorWithoutInjectAttributeClass' have no attribute that extends PreserveAttribute, such as InjectAttribute."));
+        });
+
+        var expectedPositions = new[] { new { Start = new LinePosition(15, 32), End = new LinePosition(15, 70) }, };
+
+        Assert.That(actual, Has.Length.EqualTo(expectedPositions.Length));
+
+        for (var i = 0; i < expectedPositions.Length; i++)
+        {
+            LocationAssert.HaveTheSpan(
+                expectedPositions[i].Start,
+                expectedPositions[i].End,
+                actual[i].Location
+            );
+        }
     }
 }

@@ -12,5 +12,10 @@ namespace VContainer
         {
             return this;
         }
+
+        public virtual RegistrationBuilder AsImplementedInterfaces()
+        {
+            return this;
+        }
     }
 }
