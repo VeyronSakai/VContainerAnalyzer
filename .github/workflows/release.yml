@@ -10,13 +10,14 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  repository-projects: read
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   draft:
-    name: update release draft
+    name: draft
     runs-on: ubuntu-latest
     outputs:
       tag_name: ${{ steps.release_drafter.outputs.tag_name }}

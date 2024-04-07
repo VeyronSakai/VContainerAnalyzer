@@ -25,6 +25,7 @@ jobs:
               - ".github/**"
 
   action:
+    name: Action files
     needs: paths
     if: ${{ needs.paths.outputs.action == 'true' || github.event_name == 'push'}}
     runs-on: ubuntu-latest
