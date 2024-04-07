@@ -2,12 +2,14 @@
 // This software is released under the MIT License.
 
 using System;
+using VContainer;
 
 namespace VContainerAnalyzer.Test.TestData
 {
-    public class ConstructorWithoutInjectAttributeClass : IInterface1, IInterface2, IInterface3
+    public class ConstructorWithInjectAttributeClass
     {
-        public ConstructorWithoutInjectAttributeClass(EmptyClassStub stub1, EmptyClassStub stub2)
+        [Inject]
+        public ConstructorWithInjectAttributeClass(EmptyClassStub stub1, EmptyClassStub stub2)
         {
             Console.WriteLine("");
         }

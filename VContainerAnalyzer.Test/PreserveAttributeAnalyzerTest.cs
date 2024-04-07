@@ -19,7 +19,7 @@ public class PreserveAttributeAnalyzerTest
     private const string VContainerDirectory = "VContainer";
 
     private static IEnumerable<string> VContainerSourcePaths { get; } =
-        GetVContainerFiles.Select(file => $"{Path.Combine(VContainerDirectory, file)}");
+        GetVContainerFiles.Select(file => $"{Path.Combine(VContainerDirectory, file)}").ToArray();
 
     private static IEnumerable<string> GetVContainerFiles =>
     [
@@ -27,7 +27,8 @@ public class PreserveAttributeAnalyzerTest
         "ContainerBuilder.cs",
         "ContainerBuilderExtensions.cs",
         "ContainerBuilderUnityExtensions.cs",
-        "RegistrationBuilder.cs"
+        "RegistrationBuilder.cs",
+        "InjectAttribute.cs",
     ];
 
     private static string[] ReadCodes(params string[] sources)
@@ -55,6 +56,7 @@ public class PreserveAttributeAnalyzerTest
     public async ValueTask AnalyzeRegisterEntryPointMethod_ConstructorDoesNotHaveInjectAttribute_ReportDiagnostics()
     {
         var source = ReadCodes("ConstructorWithoutInjectAttributeClass.cs",
+            "EmptyClassStub.cs",
             "Interfaces.cs",
             "RegisterEntryPointConstructorWithoutInjectAttributeClassLifetimeScope.cs");
 
@@ -114,6 +116,7 @@ public class PreserveAttributeAnalyzerTest
     public async ValueTask AnalyzeRegisterMethod_ConstructorDoesNotHaveInjectAttribute_ReportDiagnostics()
     {
         var source = ReadCodes("ConstructorWithoutInjectAttributeClass.cs",
+            "EmptyClassStub.cs",
             "Interfaces.cs",
             "RegisterConstructorWithoutInjectAttributeClassLifetimeScope.cs");
 
@@ -178,6 +181,25 @@ public class PreserveAttributeAnalyzerTest
         var source = ReadCodes("DefaultConstructorClass.cs",
             "Interfaces.cs",
             "RegisterDefaultConstructorClassLifetimeScope.cs");
+
+        var analyzer = new PreserveAttributeAnalyzer();
+        var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
+
+        var actual = diagnostics
+            .Where(x => x.Id != "CS1591") // Ignore "Missing XML comment for publicly visible type or member"
+            .Where(x => x.Id != "CS8019") // Ignore "Unnecessary using directive"
+            .ToArray();
+
+        Assert.That(actual.Length, Is.EqualTo(0));
+    }
+
+    [Test]
+    public async ValueTask AnalyzeRegisterEntryPointMethod_ConstructorHasInjectAttribute_ReportNoDiagnostics()
+    {
+        var source = ReadCodes("ConstructorWithInjectAttributeClass.cs",
+            "EmptyClassStub.cs",
+            "Interfaces.cs",
+            "RegisterEntryPointConstructorWithInjectAttributeClassLifetimeScope.cs");
 
         var analyzer = new PreserveAttributeAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
