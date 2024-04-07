@@ -7,9 +7,13 @@ namespace VContainerAnalyzer.Test.TestData
 {
     public class ConstructorWithoutInjectAttributeClass : IInterface1, IInterface2, IInterface3
     {
-        public ConstructorWithoutInjectAttributeClass(int x, int y)
+        public ConstructorWithoutInjectAttributeClass(Stub stub1, Stub stub2)
         {
             Console.WriteLine("");
         }
+    }
+
+    public class Stub
+    {
     }
 }
