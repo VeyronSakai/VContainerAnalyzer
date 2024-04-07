@@ -14,7 +14,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  update_release_draft:
+  draft:
     name: update release draft
     runs-on: ubuntu-latest
     outputs:
@@ -30,9 +30,9 @@ jobs:
     environment: release
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
-    needs: update_release_draft
+    needs: draft
     env:
-      VERSION: ${{ needs.update_release_draft.outputs.tag_name }}
+      VERSION: ${{ needs.draft.outputs.tag_name }}
     steps:
       - uses: release-drafter/release-drafter@v6
         id: release-drafter
