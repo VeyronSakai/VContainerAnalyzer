@@ -10,7 +10,8 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  repository-projects: read
+  repository-projects: write
+  issues: write
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
