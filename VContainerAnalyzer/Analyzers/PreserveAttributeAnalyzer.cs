@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 
-namespace VContainerAnalyzer;
+namespace VContainerAnalyzer.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class PreserveAttributeAnalyzer : DiagnosticAnalyzer
@@ -38,22 +38,34 @@ public sealed class PreserveAttributeAnalyzer : DiagnosticAnalyzer
         var invocation = (IInvocationOperation)context.Operation;
         var methodSymbol = invocation.TargetMethod;
         var namespaceSymbol = methodSymbol.ContainingNamespace;
+
         if (IsContainerBuilderUnityExtensions(namespaceSymbol, methodSymbol))
         {
             switch (invocation.TargetMethod.Name)
             {
                 case "RegisterEntryPoint":
                     AnalyzeRegisterEntryPointMethod(ref context, invocation);
-                    break;
+                    return;
             }
         }
-        else if (IsContainerBuilderExtensions(namespaceSymbol, methodSymbol))
+
+        if (IsContainerBuilderExtensions(namespaceSymbol, methodSymbol))
         {
             switch (invocation.TargetMethod.Name)
             {
                 case "Register":
                     AnalyzeRegisterMethod(ref context, invocation);
-                    break;
+                    return;
+            }
+        }
+
+        if (IsEntryPointBuilder(namespaceSymbol, methodSymbol))
+        {
+            switch (invocation.TargetMethod.Name)
+            {
+                case "Add":
+                    AnalyzeAddMethod(ref context, invocation);
+                    return;
             }
         }
     }
@@ -80,6 +92,28 @@ public sealed class PreserveAttributeAnalyzer : DiagnosticAnalyzer
         return methodSymbol.ContainingType.Name == "ContainerBuilderUnityExtensions";
     }
 
+    private static bool IsEntryPointBuilder(INamespaceSymbol namespaceSymbol, IMethodSymbol methodSymbol)
+    {
+        if (namespaceSymbol is not { Name: "Unity" })
+        {
+            return false;
+        }
+
+        namespaceSymbol = namespaceSymbol.ContainingNamespace;
+        if (namespaceSymbol is not { Name: "VContainer" })
+        {
+            return false;
+        }
+
+        namespaceSymbol = namespaceSymbol.ContainingNamespace;
+        if (namespaceSymbol is not { Name: "" })
+        {
+            return false;
+        }
+
+        return methodSymbol.ContainingType.Name == "EntryPointsBuilder";
+    }
+
     private static bool IsContainerBuilderExtensions(INamespaceSymbol namespaceSymbol, IMethodSymbol methodSymbol)
     {
         if (namespaceSymbol is not { Name: "VContainer" })
@@ -99,6 +133,29 @@ public sealed class PreserveAttributeAnalyzer : DiagnosticAnalyzer
     private static void AnalyzeRegisterMethod(ref OperationAnalysisContext context, IInvocationOperation invocation)
     {
         var typeArgument = invocation.TargetMethod.TypeArguments.LastOrDefault();
+        if (typeArgument is not INamedTypeSymbol concreteType)
+        {
+            return;
+        }
+
+        if (concreteType.TypeKind != TypeKind.Class)
+        {
+            return;
+        }
+
+        if (HasConstructorWithPreserveAttribute(concreteType) || !HasCustomConstructor(concreteType))
+        {
+            return;
+        }
+
+        var typeArgumentLocation = GetTypeArgumentLocation(invocation);
+        var targetLocation = typeArgumentLocation == default ? invocation.Syntax.GetLocation() : typeArgumentLocation;
+        context.ReportDiagnostic(Diagnostic.Create(s_rule, targetLocation, concreteType.Name));
+    }
+
+    private static void AnalyzeAddMethod(ref OperationAnalysisContext context, IInvocationOperation invocation)
+    {
+        var typeArgument = invocation.TargetMethod.TypeArguments.SingleOrDefault();
         if (typeArgument is not INamedTypeSymbol concreteType)
         {
             return;
