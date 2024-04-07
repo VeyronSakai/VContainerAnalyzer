@@ -14,7 +14,7 @@ using Assert = NUnit.Framework.Assert;
 namespace VContainerAnalyzer.Test;
 
 [TestFixture]
-public class VContainerAnalyzerTest
+public class PreserveAttributeAnalyzerTest
 {
     private const string VContainerDirectory = "VContainer";
 
@@ -45,7 +45,7 @@ public class VContainerAnalyzerTest
     public async Task EmptySourceCode_NoDiagnosticReport()
     {
         const string Source = "";
-        var analyzer = new VContainerAnalyzer();
+        var analyzer = new PreserveAttributeAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, Source);
 
         Assert.That(diagnostics, Is.Empty);
@@ -58,7 +58,7 @@ public class VContainerAnalyzerTest
             "Interfaces.cs",
             "RegisterEntryPointConstructorWithoutInjectAttributeClassLifetimeScope.cs");
 
-        var analyzer = new VContainerAnalyzer();
+        var analyzer = new PreserveAttributeAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
         var actual = diagnostics
@@ -71,7 +71,7 @@ public class VContainerAnalyzerTest
             Assert.That(actual.First().Id, Is.EqualTo("VContainer0001"));
             Assert.That(actual.First().GetMessage(),
                 Is.EqualTo(
-                    "The constructor of 'ConstructorWithoutInjectAttributeClass' does not have InjectAttribute."));
+                    "The constructor of 'ConstructorWithoutInjectAttributeClass' have no attribute that extends PreserveAttribute, such as InjectAttribute."));
         });
 
         var expectedPositions = new[]
@@ -99,7 +99,7 @@ public class VContainerAnalyzerTest
             "Interfaces.cs",
             "RegisterEntryPointNoConstructorClassLifetimeScope.cs");
 
-        var analyzer = new VContainerAnalyzer();
+        var analyzer = new PreserveAttributeAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
         var actual = diagnostics
@@ -117,7 +117,7 @@ public class VContainerAnalyzerTest
             "Interfaces.cs",
             "RegisterConstructorWithoutInjectAttributeClassLifetimeScope.cs");
 
-        var analyzer = new VContainerAnalyzer();
+        var analyzer = new PreserveAttributeAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
         var actual = diagnostics
@@ -130,7 +130,7 @@ public class VContainerAnalyzerTest
             Assert.That(actual.First().Id, Is.EqualTo("VContainer0001"));
             Assert.That(actual.First().GetMessage(),
                 Is.EqualTo(
-                    "The constructor of 'ConstructorWithoutInjectAttributeClass' does not have InjectAttribute."));
+                    "The constructor of 'ConstructorWithoutInjectAttributeClass' have no attribute that extends PreserveAttribute, such as InjectAttribute."));
         });
 
         var expectedPositions = new[]
@@ -161,7 +161,7 @@ public class VContainerAnalyzerTest
             "Interfaces.cs",
             "RegisterNoConstructorClassLifetimeScope.cs");
 
-        var analyzer = new VContainerAnalyzer();
+        var analyzer = new PreserveAttributeAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
         var actual = diagnostics
