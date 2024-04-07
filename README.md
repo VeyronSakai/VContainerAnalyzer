@@ -1,14 +1,9 @@
 # VContainerAnalyzer
 
+RoslynAnalyzer for [VContainer](https://github.com/hadashiA/VContainer)
+
 [![Build](https://github.com/VeyronSakai/VContainerAnalyzer/workflows/Build/badge.svg)](../../actions)
-[![NuGet version](https://badge.fury.io/nu/VContainerAnalyzer.svg)](https://www.nuget.org/packages/VContainerAnalyzer/)
-
-
-## Template ToDo list
-- [x] Create a new [Roslyn Analyzer Template][template] project.
-- [ ] Implement diagnostic analyzer
-- [ ] Publish The [NuGet Gallery](https://www.nuget.org/)
-
+[![NuGet](https://img.shields.io/nuget/v/VContainerAnalyzer.svg)](https://www.nuget.org/packages/VContainerAnalyzer/) 
 
 ---
 Analyzer based on the [Roslyn Analyzer Template][template].
