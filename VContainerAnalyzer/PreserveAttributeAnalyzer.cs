@@ -10,18 +10,19 @@ using Microsoft.CodeAnalysis.Operations;
 namespace VContainerAnalyzer;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public sealed class VContainerAnalyzer : DiagnosticAnalyzer
+public sealed class PreserveAttributeAnalyzer : DiagnosticAnalyzer
 {
     private const string DiagnosticId = "VContainer0001";
 
     private static readonly DiagnosticDescriptor s_rule = new(
         id: DiagnosticId,
-        title: "Constructor does not have InjectAttribute.",
-        messageFormat: "The constructor of '{0}' does not have InjectAttribute.",
+        title: "Constructor have no attribute that extends PreserveAttribute, such as InjectAttribute.",
+        messageFormat:
+        "The constructor of '{0}' have no attribute that extends PreserveAttribute, such as InjectAttribute.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Constructor must have InjectAttribute.");
+        description: "Constructor must have attribute that extends PreserveAttribute, such as InjectAttribute.");
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(s_rule);
 

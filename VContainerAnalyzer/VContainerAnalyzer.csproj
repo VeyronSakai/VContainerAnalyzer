@@ -19,6 +19,9 @@
   <ItemGroup Condition="Exists('$(TargetPath)')">
     <Analyzer Include="$(TargetPath)"/>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Analyzers\" />
+  </ItemGroup>
 
   <!-- For pack -->
   <PropertyGroup>
