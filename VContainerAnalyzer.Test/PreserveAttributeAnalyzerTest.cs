@@ -110,7 +110,7 @@ public class PreserveAttributeAnalyzerTest
             .Where(x => x.Id != "CS8019") // Ignore "Unnecessary using directive"
             .ToArray();
 
-        Assert.That(actual.Length, Is.EqualTo(0));
+        Assert.That(actual, Is.Empty);
     }
 
     [Test]
@@ -173,7 +173,7 @@ public class PreserveAttributeAnalyzerTest
             .Where(x => x.Id != "CS8019") // Ignore "Unnecessary using directive"
             .ToArray();
 
-        Assert.That(actual.Length, Is.EqualTo(0));
+        Assert.That(actual, Is.Empty);
     }
 
     [Test]
@@ -191,7 +191,7 @@ public class PreserveAttributeAnalyzerTest
             .Where(x => x.Id != "CS8019") // Ignore "Unnecessary using directive"
             .ToArray();
 
-        Assert.That(actual.Length, Is.EqualTo(0));
+        Assert.That(actual, Is.Empty);
     }
 
     [Test]
@@ -210,7 +210,7 @@ public class PreserveAttributeAnalyzerTest
             .Where(x => x.Id != "CS8019") // Ignore "Unnecessary using directive"
             .ToArray();
 
-        Assert.That(actual.Length, Is.EqualTo(0));
+        Assert.That(actual, Is.Empty);
     }
 
     [Test]
@@ -229,7 +229,7 @@ public class PreserveAttributeAnalyzerTest
             .Where(x => x.Id != "CS8019") // Ignore "Unnecessary using directive"
             .ToArray();
 
-        Assert.That(actual.Length, Is.EqualTo(0));
+        Assert.That(actual, Is.Empty);
     }
 
     [Test]
@@ -268,5 +268,24 @@ public class PreserveAttributeAnalyzerTest
                 actual[i].Location
             );
         }
+    }
+
+    [Test]
+    public async ValueTask AnalyzeAddMethod_ConstructorHasInjectAttribute_ReportNoDiagnostics()
+    {
+        var source = ReadCodes("ConstructorWithInjectAttributeClass.cs",
+            "EmptyClassStub.cs",
+            "Interfaces.cs",
+            "AddConstructorWithInjectAttributeClassLifetimeScope.cs");
+
+        var analyzer = new PreserveAttributeAnalyzer();
+        var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
+
+        var actual = diagnostics
+            .Where(x => x.Id != "CS1591") // Ignore "Missing XML comment for publicly visible type or member"
+            .Where(x => x.Id != "CS8019") // Ignore "Unnecessary using directive"
+            .ToArray();
+
+        Assert.That(actual, Is.Empty);
     }
 }
