@@ -33,6 +33,7 @@
     <projectUrl>https://github.com/VeyronSakai/VContainerAnalyzer</projectUrl>
     <license>MIT</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>Copyright (c) 2024 Yuki Sakai</copyright>
 
     <!-- For analyzer package -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
