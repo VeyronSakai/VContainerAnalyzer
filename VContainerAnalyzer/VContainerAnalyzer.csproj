@@ -5,6 +5,8 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <IsRoslynComponent>true</IsRoslynComponent>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,17 +26,12 @@
   <PropertyGroup>
     <!-- Required elements-->
     <id>VContainerAnalyzer</id><!-- Must be unique within the hosting gallery -->
-    <version></version>
-    <description></description>
-    <authors></authors>
+    <description>Roslyn Analyzer for VContainer.</description>
 
     <!-- Optional elements -->
     <projectUrl>https://github.com/VeyronSakai/VContainerAnalyzer</projectUrl>
-    <license></license>
-    <icon></icon>
+    <license>MIT</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <copyright></copyright>
-    <title></title>
 
     <!-- For analyzer package -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
