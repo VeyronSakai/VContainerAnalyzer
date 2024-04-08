@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\VContainerAnalyzer\VContainerAnalyzer.csproj">
+    <ProjectReference Include="..\VContainerAnalyzer\VContainerAnalyzer.csproj">
       <PrivateAssets>all</PrivateAssets>
       <!-- If enabling the target analyzer in this test project, set ReferenceOutputAssembly="false" and OutputItemType="Analyzer".
             See https://www.meziantou.net/referencing-an-analyzer-from-a-project.htm -->
