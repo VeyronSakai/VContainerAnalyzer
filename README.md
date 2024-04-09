@@ -1,6 +1,6 @@
 # VContainerAnalyzer
 
-[![Build](https://github.com/VeyronSakai/VContainerAnalyzer/workflows/Build/badge.svg)](../../actions)
+[![Test](https://github.com/VeyronSakai/VContainerAnalyzer/workflows/Build/badge.svg)](../../actions)
 [![NuGet](https://img.shields.io/nuget/v/VContainerAnalyzer.svg)](https://www.nuget.org/packages/VContainerAnalyzer/) 
 
 RoslynAnalyzer for [VContainer](https://github.com/hadashiA/VContainer)
