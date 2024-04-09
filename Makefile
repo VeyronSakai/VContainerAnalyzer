@@ -8,7 +8,7 @@ all: build copy
 .PHONY: build
 build: ## Build csproj
 	rm -rf output
-	dotnet build --no-incremental VContainerAnalyzer/VContainerAnalyzer.csproj --output output
+	dotnet build --no-incremental VContainerAnalyzer/VContainerAnalyzer.csproj --output output --configuration Release
 
 .PHONY: copy
 copy: ## Copy dll file to Unity Project
