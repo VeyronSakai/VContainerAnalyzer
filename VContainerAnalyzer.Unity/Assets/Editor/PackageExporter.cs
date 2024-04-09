@@ -6,7 +6,7 @@ namespace Editor
     public class PackageExporter
     {
         private const string AnalyzerPluginPath = "Assets/Plugins/VContainerAnalyzer/";
-        private const string ExportPath = "./UnityPackageTest.unitypackage";
+        private const string ExportPath = "./VContainerAnalyzer.unitypackage";
 
         [MenuItem("Tools/ExportPackage")]
         private static void Export()
