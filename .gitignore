@@ -487,5 +487,8 @@ fabric.properties
 # macOS .DS_Store file
 **/.DS_Store
 
+# except packages in Unity projects
+!*.[Uu]nity/[Pp]ackages/*
+
 # Build artifact
 output/
