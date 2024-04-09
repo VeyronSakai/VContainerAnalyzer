@@ -20,29 +20,13 @@ namespace Editor
                 return;
             }
 
-            importer.SetCompatibleWithAnyPlatform(false);
-
-            AssetDatabase.SetLabels(importer, new[] { RoslynAnalyzerLabel });
-        }
-
-        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets,
-            string[] movedAssets, string[] movedFromAssetPaths)
-        {
-            foreach (var assetPath in importedAssets)
+            if (!importer.importSettingsMissing)
             {
-                if (assetPath != AnalyzerDLLPath)
-                {
-                    continue;
-                }
-
-                var importer = AssetImporter.GetAtPath(assetPath) as PluginImporter;
-                if (importer == null)
-                {
-                    continue;
-                }
-
-                importer.SaveAndReimport();
+                return;
             }
+
+            importer.SetCompatibleWithAnyPlatform(false);
+            AssetDatabase.SetLabels(importer, new[] { RoslynAnalyzerLabel });
         }
     }
 }
