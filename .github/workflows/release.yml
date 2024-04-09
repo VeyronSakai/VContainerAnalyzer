@@ -85,4 +85,4 @@ jobs:
           buildMethod: Editor.PackageExporter.Export
       - name: Upload unitypackage
         run: |
-          gh release upload "${VERSION}" "VContainerAnalyzer.Unity/UnityPackageTest.unitypackage"
+          gh release upload "${VERSION}" "VContainerAnalyzer.Unity/VContainerAnalyzer.unitypackage"
