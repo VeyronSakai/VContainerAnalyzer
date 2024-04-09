@@ -82,7 +82,7 @@ jobs:
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           projectPath: ./VContainerAnalyzer.Unity
           targetPlatform: StandaloneLinux64
