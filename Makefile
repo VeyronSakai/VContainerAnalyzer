@@ -12,4 +12,5 @@ build: ## Build csproj
 
 .PHONY: copy
 copy: ## Copy dll file to Unity Project
+	rm -f VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer/VContainerAnalyzer.dll*
 	cp output/VContainerAnalyzer.dll VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer/VContainerAnalyzer.dll
