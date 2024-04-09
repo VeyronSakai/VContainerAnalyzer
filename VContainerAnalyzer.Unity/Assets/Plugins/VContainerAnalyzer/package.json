@@ -2,7 +2,8 @@
   "name": "com.veyronsakai.vcontainer.analyzer",
   "displayName": "VContainer Analyzer",
   "version": "0.1.5",
-  "unity": "2022.3",
+  "unity": "2021.1",
+  "unityRelease": "2f1",
   "description": "Roslyn Analyzer for VContainer.",
   "author": {
     "name": "Yuki Sakai"
