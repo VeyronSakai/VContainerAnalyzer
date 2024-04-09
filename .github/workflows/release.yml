@@ -80,7 +80,7 @@ jobs:
         env:
           ENCODED_UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_BASE64 }}
         run: |
-          echo "UNITY_LICENSE=$(echo ${ENCODED_UNITY_LICENSE} | base64 --decode)" >> "${GITHUB_ENV}"
+          echo "UNITY_LICENSE=$(echo "${ENCODED_UNITY_LICENSE}" | base64 --decode)" >> "${GITHUB_ENV}"
       - name: Export unitypackage
         uses: game-ci/unity-builder@v4
         env:
