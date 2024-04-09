@@ -489,6 +489,7 @@ fabric.properties
 
 # except packages in Unity projects
 !*.[Uu]nity/[Pp]ackages/*
+!*.[Uu]nity/**/*.meta
 
 # Build artifact
 output/
