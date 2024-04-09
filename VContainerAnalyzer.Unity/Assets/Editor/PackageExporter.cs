@@ -9,7 +9,6 @@ namespace Editor
         private const string ExportPath = "./UnityPackageTest.unitypackage";
 
         [MenuItem("Tools/ExportPackage")]
-        // 必ずstaticにする
         private static void Export()
         {
             var assetPathNames = AssetDatabase.FindAssets("", new[] { AnalyzerPluginPath })
