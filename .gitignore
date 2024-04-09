@@ -483,3 +483,9 @@ fabric.properties
 
 # Template project files in .idea
 .idea/.idea.RoslynAnalyzerTemplate/
+
+# macOS .DS_Store file
+**/.DS_Store
+
+# Build artifact
+output/
