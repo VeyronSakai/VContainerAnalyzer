@@ -1,0 +1,25 @@
+using System.Linq;
+using UnityEditor;
+
+namespace Editor
+{
+    public class PackageExporter
+    {
+        private const string AnalyzerPluginPath = "Assets/Plugins/VContainerAnalyzer/";
+        private const string ExportPath = "./UnityPackageTest.unitypackage";
+
+        [MenuItem("Tools/ExportPackage")]
+        // 必ずstaticにする
+        private static void Export()
+        {
+            var assetPathNames = AssetDatabase.FindAssets("", new[] { AnalyzerPluginPath })
+                .Select(AssetDatabase.GUIDToAssetPath)
+                .ToArray();
+
+            AssetDatabase.ExportPackage(
+                assetPathNames,
+                ExportPath,
+                ExportPackageOptions.IncludeDependencies);
+        }
+    }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "com.veyronsakai.vcontainer.analyzer",
+  "displayName": "VContainerAnalyzer",
+  "version": "0.1.5",
+  "unity": "2022.3",
+  "description": "Roslyn Analyzer for VContainer.",
+  "author": {
+    "name": "Yuki Sakai"
+  }
+}
