@@ -13,6 +13,9 @@ permissions:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+concurrency:
+  group: ${{ github.workflow }}
+
 jobs:
   draft:
     name: draft
@@ -73,12 +76,16 @@ jobs:
           dotnet nuget push "VContainerAnalyzer.${VERSION}.nupkg" \
             -s https://api.nuget.org/v3/index.json \
             -k "${NUGET_API_KEY}"
+      - name: Decode encoded unity license string
+        env:
+          ENCODED_UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_BASE64 }}
+        run: |
+          echo "UNITY_LICENSE=$(echo "${ENCODED_UNITY_LICENSE}" | base64 --decode)" >> "${GITHUB_ENV}"
       - name: Export unitypackage
         uses: game-ci/unity-builder@v4
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           projectPath: ./VContainerAnalyzer.Unity
           targetPlatform: StandaloneLinux64
