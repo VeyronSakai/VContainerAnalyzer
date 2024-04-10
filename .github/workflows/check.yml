@@ -43,7 +43,7 @@ jobs:
           target_path: ${{ env.UNITY_PROJECT_PATH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: mikepenz/action-junit-report@v3
+      - uses: mikepenz/action-junit-report@v4
         if: success() || failure()
         with:
           report_paths: meta-check-result.xml
