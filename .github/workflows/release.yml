@@ -23,6 +23,7 @@ concurrency:
 jobs:
   paths:
     name: paths
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     outputs:
       package_json: ${{ steps.filter.outputs.package_json }}
