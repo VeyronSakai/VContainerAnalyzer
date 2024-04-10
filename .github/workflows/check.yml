@@ -15,21 +15,21 @@ env:
   UNITY_PROJECT_PATH: "VContainerAnalyzer.Unity/"
 
 jobs:
-  # paths:
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     unity: ${{ steps.filter.outputs.unity }}
-  #   steps:
-  #     - uses: dorny/paths-filter@v3
-  #       id: filter
-  #       with:
-  #         filters: |
-  #           unity:
-  #             - ${{ env.UNITY_PROJECT_PATH }}
+  paths:
+    runs-on: ubuntu-latest
+    outputs:
+      unity: ${{ steps.filter.outputs.unity }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            unity:
+              - ${{ env.UNITY_PROJECT_PATH }}
 
   unity-meta-check:
-    # needs: paths
-    # if: ${{ needs.paths.outputs.unity == 'true' }}
+    needs: paths
+    if: ${{ needs.paths.outputs.unity == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
