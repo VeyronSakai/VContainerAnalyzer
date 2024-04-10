@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   paths:
-    if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.user.login != 'github-actions[bot]'}}
     runs-on: ubuntu-latest
     outputs:
       action: ${{ steps.filter.outputs.action }}
