@@ -1,8 +1,5 @@
 name: Release
 on:
-  push:
-    branches:
-      - main
   pull_request:
     types:
       - opened
@@ -40,6 +37,7 @@ jobs:
 
   draft:
     name: draft
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged && github.event.pull_request.base.ref == 'main' }}
     runs-on: ubuntu-latest
     outputs:
       tag_name: ${{ steps.release_drafter.outputs.tag_name }}
@@ -100,7 +98,7 @@ jobs:
     needs: [draft, paths]
     environment: release
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged && needs.paths.outputs.package_json == 'true' && github.event.pull_request.base.ref == 'main' }}
+    if: ${{ needs.paths.outputs.package_json == 'true' }}
     env:
       VERSION: ${{ needs.draft.outputs.tag_name }}
     steps:
