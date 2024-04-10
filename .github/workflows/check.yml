@@ -49,4 +49,4 @@ jobs:
         with:
           name: Unity Meta Check Report
           path: meta-check-result.xml
-          reporter: jest-junit
+          reporter: dotnet-trx
