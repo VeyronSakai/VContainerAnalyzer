@@ -8,27 +8,28 @@ concurrency:
 
 permissions:
   contents: read
-  pull-requests: write
+  actions: read
+  checks: write
 
 env:
   UNITY_PROJECT_PATH: "VContainerAnalyzer.Unity/"
 
 jobs:
-  paths:
-    runs-on: ubuntu-latest
-    outputs:
-      unity: ${{ steps.filter.outputs.unity }}
-    steps:
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            unity:
-              - ${{ env.UNITY_PROJECT_PATH }}
+  # paths:
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     unity: ${{ steps.filter.outputs.unity }}
+  #   steps:
+  #     - uses: dorny/paths-filter@v3
+  #       id: filter
+  #       with:
+  #         filters: |
+  #           unity:
+  #             - ${{ env.UNITY_PROJECT_PATH }}
 
   unity-meta-check:
-    needs: paths
-    if: ${{ needs.paths.outputs.unity == 'true' }}
+    # needs: paths
+    # if: ${{ needs.paths.outputs.unity == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +43,10 @@ jobs:
           target_path: ${{ env.UNITY_PROJECT_PATH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: mikepenz/action-junit-report@v3
-        if: always()
+      - name: Report unity meta check results
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
         with:
-          report_paths: meta-check-result.xml
+          name: Unity Meta Check Report
+          path: meta-check-result.xml
+          reporter: jest-junit
