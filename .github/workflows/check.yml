@@ -10,8 +10,25 @@ permissions:
   contents: read
   pull-requests: write
 
+env:
+  UNITY_PROJECT_PATH: "VContainerAnalyzer.Unity/"
+
 jobs:
+  paths:
+    runs-on: ubuntu-latest
+    outputs:
+      unity: ${{ steps.filter.outputs.unity }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            unity:
+              - ${{ env.UNITY_PROJECT_PATH }}
+
   unity-meta-check:
+    needs: paths
+    if: ${{ needs.paths.outputs.unity == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +39,7 @@ jobs:
           enable_junit: true
           junit_xml_path: meta-check-result.xml
           enable_pr_comment: true
-          target_path: "./VContainerAnalyzer.Unity/"
+          target_path: ${{ env.UNITY_PROJECT_PATH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: mikepenz/action-junit-report@v3
