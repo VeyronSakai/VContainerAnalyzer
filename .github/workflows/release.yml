@@ -4,7 +4,7 @@ on:
     branches:
       - main
   pull_request:
-    types: 
+    types:
       - opened
       - synchronize
       - reopened
@@ -66,7 +66,21 @@ jobs:
           $jsonContent = Get-Content -Path $env:PACKAGE_JSON_PATH | ConvertFrom-Json
           $jsonContent.version = $env:VERSION
           $jsonContent | ConvertTo-Json | Set-Content -Path $env:PACKAGE_JSON_PATH
+      - name: Confirm package.json diff
+        id: package-json
+        run: |
+          git add "${PACKAGE_JSON_PATH}"
+          git diff --cached --exit-code --quiet || result=$?
+          if [ "${result}" -eq 0 ]; then
+            echo "diff=false" >> "${GITHUB_OUTPUT}"
+          elif [ "${result}" -eq 1 ]; then
+            echo "diff=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "exit code of diff is unknown: ${result}"
+            exit 1
+          fi
       - name: Commit package.json
+        if: ${{ steps.package-json.outputs.diff == 'true' }}
         run: |
           git config user.email github-actions[bot]@users.noreply.github.com
           git config user.name github-actions[bot]
@@ -75,6 +89,7 @@ jobs:
           git commit -m "Update package.json"
           git push -u origin "${SOURCE_BRANCH}"
       - name: Create pull request and merge
+        if: ${{ steps.package-json.outputs.diff == 'true' }}
         run: |
           gh pr create --title "Update package.json" --body "Update package.json" --base main --head "${SOURCE_BRANCH}"
           gh pr merge "${SOURCE_BRANCH}" --auto --merge
