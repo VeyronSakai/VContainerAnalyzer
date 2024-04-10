@@ -70,6 +70,7 @@ jobs:
         id: package-json
         run: |
           git add "${PACKAGE_JSON_PATH}"
+          result=0
           git diff --cached --exit-code --quiet || result=$?
           if [ "${result}" -eq 0 ]; then
             echo "diff=false" >> "${GITHUB_OUTPUT}"
