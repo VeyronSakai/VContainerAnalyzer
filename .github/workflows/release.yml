@@ -57,7 +57,6 @@ jobs:
     env:
       VERSION: ${{ needs.draft.outputs.tag_name }}
       SOURCE_BRANCH: github-actions/package-json/${{ github.run_number }}
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - name: Update package.json
@@ -90,6 +89,8 @@ jobs:
           git push -u origin "${SOURCE_BRANCH}"
       - name: Create pull request and merge
         if: ${{ steps.package-json.outputs.diff == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           gh pr create --title "Update package.json" --body "Update package.json" --base main --head "${SOURCE_BRANCH}"
           gh pr merge "${SOURCE_BRANCH}" --auto --merge
