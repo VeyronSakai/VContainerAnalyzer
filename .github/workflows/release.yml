@@ -3,7 +3,9 @@ on:
   push:
     branches:
       - main
-  pull_request_target:
+  pull_request:
+    types:
+      - closed
   workflow_dispatch:
 
 permissions:
@@ -12,12 +14,26 @@ permissions:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PACKAGE_JSON_PATH: VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer/package.json
 
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: true
 
 jobs:
+  paths:
+    name: paths
+    runs-on: ubuntu-latest
+    outputs:
+      package_json: ${{ steps.filter.outputs.package_json }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            package_json:
+              - ${{ env.PACKAGE_JSON_PATH }}
+
   draft:
     name: draft
     runs-on: ubuntu-latest
@@ -29,12 +45,41 @@ jobs:
         with:
           commitish: main
 
+  package-json:
+    name: package-json
+    needs: draft
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.draft.outputs.tag_name }}
+      SOURCE_BRANCH: github-actions/package-json/${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update package.json
+        shell: pwsh
+        run: |
+          $jsonContent = Get-Content -Path $env:PACKAGE_JSON_PATH | ConvertFrom-Json
+          $jsonContent.version = $env:VERSION
+          $jsonContent | ConvertTo-Json | Set-Content -Path $env:PACKAGE_JSON_PATH
+      - name: Commit package.json
+        run: |
+          git config user.email github-actions[bot]@users.noreply.github.com
+          git config user.name github-actions[bot]
+          git switch -C "${SOURCE_BRANCH}"
+          git add "${PACKAGE_JSON_PATH}"
+          git commit -m "Update package.json"
+          git push -u origin "${SOURCE_BRANCH}"
+      - name: Create pull request and merge
+        run: |
+          gh pr create --title "Update package.json" --body "Update package.json" --base main --head "${SOURCE_BRANCH}"
+          gh pr merge "${SOURCE_BRANCH}" --auto --merge
+
   release:
     name: release
+    needs: [draft, paths]
     environment: release
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
-    needs: draft
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged && needs.paths.outputs.package_json == 'true' && github.event.pull_request.base.ref == 'main' }}
     env:
       VERSION: ${{ needs.draft.outputs.tag_name }}
     steps:
