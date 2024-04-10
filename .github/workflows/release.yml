@@ -4,7 +4,10 @@ on:
     branches:
       - main
   pull_request:
-    types:
+    types: 
+      - opened
+      - synchronize
+      - reopened
       - closed
   workflow_dispatch:
 
