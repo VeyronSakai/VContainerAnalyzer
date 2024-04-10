@@ -1,0 +1,31 @@
+name: Check
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  unity-meta-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeNA/unity-meta-check@v3
+        continue-on-error: true
+        with:
+          ignore_case: true
+          enable_junit: true
+          junit_xml_path: meta-check-result.xml
+          enable_pr_comment: true
+          target_path: "./VContainerAnalyzer.Unity/"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: mikepenz/action-junit-report@v3
+        if: always()
+        with:
+          report_paths: meta-check-result.xml
