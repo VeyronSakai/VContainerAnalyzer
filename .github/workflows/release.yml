@@ -4,7 +4,10 @@ on:
     branches:
       - main
   pull_request:
-    types:
+    types: 
+      - opened
+      - synchronize
+      - reopened
       - closed
   workflow_dispatch:
 
@@ -23,6 +26,7 @@ concurrency:
 jobs:
   paths:
     name: paths
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     outputs:
       package_json: ${{ steps.filter.outputs.package_json }}
