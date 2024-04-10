@@ -26,7 +26,7 @@ concurrency:
 jobs:
   paths:
     name: paths
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.user.login != 'github-actions[bot]'}}
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     outputs:
       package_json: ${{ steps.filter.outputs.package_json }}
