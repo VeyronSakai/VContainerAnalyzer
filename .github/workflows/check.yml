@@ -43,10 +43,7 @@ jobs:
           target_path: ${{ env.UNITY_PROJECT_PATH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Report unity meta check results
-        uses: dorny/test-reporter@v1
+      - uses: mikepenz/action-junit-report@v3
         if: success() || failure()
         with:
-          name: Unity Meta Check Report
-          path: meta-check-result.xml
-          reporter: dotnet-trx
+          report_paths: meta-check-result.xml
