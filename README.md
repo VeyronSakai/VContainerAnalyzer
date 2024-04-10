@@ -23,7 +23,7 @@ VContainerAnalyzer can be set up via Unity Package Manager by following the step
 
 ### .unitypackage
 
-VContainerAnalyzer can be set up by using the .unitypackage available at [Releases](https://github.com/VeyronSakai/VContainerAnalyzer/releases).
+VContainerAnalyzer can be set up by using the .unitypackage available at [Releases](https://github.com/VeyronSakai/VContainerAnalyzer/releases/latest).
 
 ## Rules
 
