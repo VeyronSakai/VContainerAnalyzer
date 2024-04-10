@@ -37,7 +37,7 @@ jobs:
 
   draft:
     name: draft
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' }}
+    if: ${{ (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main') || github.event_name == 'workflow_dispatch'}}
     runs-on: ubuntu-latest
     outputs:
       tag_name: ${{ steps.release_drafter.outputs.tag_name }}
