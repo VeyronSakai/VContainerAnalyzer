@@ -7,8 +7,6 @@ namespace Sandbox
 {
     public class ConstructorWithInjectAttributeClass : IInterface1, IInterface2, IInterface3
     {
-        [Inject] private EmptyClassStub _field;
-        
         [Inject]
         public ConstructorWithInjectAttributeClass(EmptyClassStub stub1, EmptyClassStub stub2)
         {

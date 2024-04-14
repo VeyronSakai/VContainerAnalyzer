@@ -18,10 +18,10 @@ public sealed class RegisterMethodsAnalyzer : DiagnosticAnalyzer
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
-        context.RegisterOperationAction(AnalyzeAttributes, OperationKind.Invocation);
+        context.RegisterOperationAction(Analyze, OperationKind.Invocation);
     }
 
-    private static void AnalyzeAttributes(OperationAnalysisContext context)
+    private static void Analyze(OperationAnalysisContext context)
     {
         var invocation = (IInvocationOperation)context.Operation;
         var methodSymbol = invocation.TargetMethod;
