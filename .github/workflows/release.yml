@@ -111,7 +111,7 @@ jobs:
           git commit -m "Update README.md"
           git push -u origin "${SOURCE_BRANCH}"
       - name: Create pull request and merge
-        if: ${{ steps.package-json.outputs.diff == 'true' || steps.readme.outputs.diff == 'true'
+        if: ${{ steps.package-json.outputs.diff == 'true' || steps.readme.outputs.diff == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
