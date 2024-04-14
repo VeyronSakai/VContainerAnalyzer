@@ -28,7 +28,7 @@ public sealed class FieldAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        var attribute = fieldSymbol.GetAttributes().FirstOrDefault(x => x.AttributeClass.IsPreserveAttribute());
+        var attribute = fieldSymbol.GetAttributes().FirstOrDefault(x => x.AttributeClass.IsInjectAttribute());
         if (attribute == null)
         {
             return;
