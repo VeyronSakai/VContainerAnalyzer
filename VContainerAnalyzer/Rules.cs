@@ -5,9 +5,9 @@ using Microsoft.CodeAnalysis;
 
 namespace VContainerAnalyzer;
 
-public static class Rules
+internal static class Rules
 {
-    public static readonly DiagnosticDescriptor Rule0001 = new(
+    internal static readonly DiagnosticDescriptor Rule0001 = new(
         id: "VContainer0001",
         title: "Constructor have no attribute that extends PreserveAttribute, such as InjectAttribute.",
         messageFormat:
@@ -18,7 +18,7 @@ public static class Rules
         description: "Constructor must have attribute that extends PreserveAttribute, such as InjectAttribute."
     );
 
-    public static readonly DiagnosticDescriptor Rule0002 = new(
+    internal static readonly DiagnosticDescriptor Rule0002 = new(
         id: "VContainer0002",
         title: "Property/Field Injection has been used.",
         messageFormat:

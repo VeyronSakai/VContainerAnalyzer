@@ -5,11 +5,12 @@ using Microsoft.CodeAnalysis;
 
 namespace VContainerAnalyzer;
 
-public static class Extensions
+internal static class Extensions
 {
     private const string PreserveAttributeName = "PreserveAttribute";
+    private const string InjectAttributeName = "InjectAttribute";
 
-    public static bool IsPreserveAttribute(this ITypeSymbol attributeClass)
+    internal static bool IsPreserveAttribute(this ITypeSymbol attributeClass)
     {
         if (attributeClass.Name == PreserveAttributeName)
         {
@@ -18,5 +19,16 @@ public static class Extensions
 
         var baseType = attributeClass.BaseType;
         return baseType != null && IsPreserveAttribute(baseType);
+    }
+
+    internal static bool IsInjectAttribute(this ITypeSymbol attributeClass)
+    {
+        if (attributeClass.Name == InjectAttributeName)
+        {
+            return true;
+        }
+
+        var baseType = attributeClass.BaseType;
+        return baseType != null && IsInjectAttribute(baseType);
     }
 }

@@ -29,7 +29,7 @@ public sealed class PropertyAnalyzer : DiagnosticAnalyzer
         }
 
         var attribute = propertySymbol.GetAttributes()
-            .FirstOrDefault(x => x.AttributeClass.IsPreserveAttribute());
+            .FirstOrDefault(x => x.AttributeClass.IsInjectAttribute());
         if (attribute == null)
         {
             return;
