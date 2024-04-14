@@ -9,8 +9,7 @@ on:
 
 permissions:
   contents: read
-  actions: read
-  checks: write
+  pull-requests: write
 
 jobs:
   paths:
