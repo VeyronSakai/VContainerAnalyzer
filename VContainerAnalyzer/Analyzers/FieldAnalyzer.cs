@@ -11,19 +11,7 @@ namespace VContainerAnalyzer.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class FieldAnalyzer : DiagnosticAnalyzer
 {
-    private const string DiagnosticId = "VContainer0002";
-
-    private static readonly DiagnosticDescriptor s_rule = new(
-        id: DiagnosticId,
-        title: "Property/Field Inject has been used.",
-        messageFormat:
-        "Injected into '{0}' using Property/Field Injection. Consider using Constructor or Method Injection.",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true,
-        description: "Property/Field Injection is used. It is recommended to use Constructor or Method Injection.");
-
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(s_rule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rules.Rule0002);
 
     public override void Initialize(AnalysisContext context)
     {
@@ -46,7 +34,7 @@ public sealed class FieldAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        context.ReportDiagnostic(Diagnostic.Create(s_rule,
+        context.ReportDiagnostic(Diagnostic.Create(Rules.Rule0002,
             attribute.ApplicationSyntaxReference.GetSyntax().GetLocation(), fieldSymbol.Name));
     }
 }

@@ -15,15 +15,17 @@ public static class Rules
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Constructor must have attribute that extends PreserveAttribute, such as InjectAttribute.");
+        description: "Constructor must have attribute that extends PreserveAttribute, such as InjectAttribute."
+    );
 
     public static readonly DiagnosticDescriptor Rule0002 = new(
         id: "VContainer0002",
-        title: "Property/Field Inject has been used.",
+        title: "Property/Field Injection has been used.",
         messageFormat:
         "Injected into '{0}' using Property/Field Injection. Consider using Constructor or Method Injection.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "Property/Field Injection is used. It is recommended to use Constructor or Method Injection.");
+        description: "Property/Field Injection is used. It is recommended to use Constructor or Method Injection."
+    );
 }
