@@ -12,19 +12,7 @@ namespace VContainerAnalyzer.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class RegisterMethodsAnalyzer : DiagnosticAnalyzer
 {
-    private const string DiagnosticId = "VContainer0001";
-
-    private static readonly DiagnosticDescriptor s_rule = new(
-        id: DiagnosticId,
-        title: "Constructor have no attribute that extends PreserveAttribute, such as InjectAttribute.",
-        messageFormat:
-        "The constructor of '{0}' have no attribute that extends PreserveAttribute, such as InjectAttribute.",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true,
-        description: "Constructor must have attribute that extends PreserveAttribute, such as InjectAttribute.");
-
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(s_rule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rules.Rule0001);
 
     public override void Initialize(AnalysisContext context)
     {
@@ -150,7 +138,7 @@ public sealed class RegisterMethodsAnalyzer : DiagnosticAnalyzer
 
         var typeArgumentLocation = GetTypeArgumentLocation(invocation);
         var targetLocation = typeArgumentLocation == default ? invocation.Syntax.GetLocation() : typeArgumentLocation;
-        context.ReportDiagnostic(Diagnostic.Create(s_rule, targetLocation, concreteType.Name));
+        context.ReportDiagnostic(Diagnostic.Create(Rules.Rule0001, targetLocation, concreteType.Name));
     }
 
     private static void AnalyzeAddMethod(ref OperationAnalysisContext context, IInvocationOperation invocation)
@@ -173,7 +161,7 @@ public sealed class RegisterMethodsAnalyzer : DiagnosticAnalyzer
 
         var typeArgumentLocation = GetTypeArgumentLocation(invocation);
         var targetLocation = typeArgumentLocation == default ? invocation.Syntax.GetLocation() : typeArgumentLocation;
-        context.ReportDiagnostic(Diagnostic.Create(s_rule, targetLocation, concreteType.Name));
+        context.ReportDiagnostic(Diagnostic.Create(Rules.Rule0001, targetLocation, concreteType.Name));
     }
 
     private static void AnalyzeRegisterInstanceMethod(ref OperationAnalysisContext context,
@@ -213,7 +201,7 @@ public sealed class RegisterMethodsAnalyzer : DiagnosticAnalyzer
 
         if (targetLocation != default)
         {
-            context.ReportDiagnostic(Diagnostic.Create(s_rule, targetLocation, concreteType.Name));
+            context.ReportDiagnostic(Diagnostic.Create(Rules.Rule0001, targetLocation, concreteType.Name));
         }
     }
 
@@ -238,7 +226,7 @@ public sealed class RegisterMethodsAnalyzer : DiagnosticAnalyzer
         var location = GetTypeArgumentLocation(invocation);
         if (location != default)
         {
-            context.ReportDiagnostic(Diagnostic.Create(s_rule, location, concreteType.Name));
+            context.ReportDiagnostic(Diagnostic.Create(Rules.Rule0001, location, concreteType.Name));
         }
     }
 
@@ -293,7 +281,7 @@ public sealed class RegisterMethodsAnalyzer : DiagnosticAnalyzer
             // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
             foreach (var attribute in constructor.GetAttributes())
             {
-                if (InheritsPreserveAttribute(attribute.AttributeClass))
+                if (attribute.AttributeClass.IsPreserveAttribute())
                 {
                     return true;
                 }
@@ -301,16 +289,5 @@ public sealed class RegisterMethodsAnalyzer : DiagnosticAnalyzer
         }
 
         return false;
-    }
-
-    private static bool InheritsPreserveAttribute(ITypeSymbol attributeClass)
-    {
-        if (attributeClass.Name == "PreserveAttribute")
-        {
-            return true;
-        }
-
-        var baseType = attributeClass.BaseType;
-        return baseType != null && InheritsPreserveAttribute(baseType);
     }
 }

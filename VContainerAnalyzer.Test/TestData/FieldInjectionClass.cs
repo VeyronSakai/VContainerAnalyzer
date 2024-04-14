@@ -7,6 +7,7 @@ namespace VContainerAnalyzer.Test.TestData
 {
     public class FieldInjectionClass
     {
-        [Inject] private EmptyClassStub _field;
+        [Inject] private EmptyClassStub _field1;
+        private EmptyClassStub _field2;
     }
 }
