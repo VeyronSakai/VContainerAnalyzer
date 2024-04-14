@@ -15,7 +15,7 @@ using Assert = NUnit.Framework.Assert;
 namespace VContainerAnalyzer.Test;
 
 [TestFixture]
-public class PreserveAttributeAnalyzerTest
+public class ConstructorAnalyzerTest
 {
     private const string VContainerDirectory = "VContainer";
 
@@ -47,7 +47,7 @@ public class PreserveAttributeAnalyzerTest
     public async Task EmptySourceCode_NoDiagnosticReport()
     {
         const string Source = "";
-        var analyzer = new PreserveAttributeAnalyzer();
+        var analyzer = new ConstructorAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, Source);
 
         Assert.That(diagnostics, Is.Empty);
@@ -61,7 +61,7 @@ public class PreserveAttributeAnalyzerTest
             "Interfaces.cs",
             "RegisterEntryPointConstructorWithoutInjectAttributeClassLifetimeScope.cs");
 
-        var analyzer = new PreserveAttributeAnalyzer();
+        var analyzer = new ConstructorAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
         var actual = diagnostics
@@ -102,7 +102,7 @@ public class PreserveAttributeAnalyzerTest
             "Interfaces.cs",
             "RegisterEntryPointNoConstructorClassLifetimeScope.cs");
 
-        var analyzer = new PreserveAttributeAnalyzer();
+        var analyzer = new ConstructorAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
         var actual = diagnostics
@@ -121,7 +121,7 @@ public class PreserveAttributeAnalyzerTest
             "Interfaces.cs",
             "RegisterConstructorWithoutInjectAttributeClassLifetimeScope.cs");
 
-        var analyzer = new PreserveAttributeAnalyzer();
+        var analyzer = new ConstructorAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
         var actual = diagnostics
@@ -165,7 +165,7 @@ public class PreserveAttributeAnalyzerTest
             "Interfaces.cs",
             "RegisterNoConstructorClassLifetimeScope.cs");
 
-        var analyzer = new PreserveAttributeAnalyzer();
+        var analyzer = new ConstructorAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
         var actual = diagnostics
@@ -183,7 +183,7 @@ public class PreserveAttributeAnalyzerTest
             "Interfaces.cs",
             "RegisterDefaultConstructorClassLifetimeScope.cs");
 
-        var analyzer = new PreserveAttributeAnalyzer();
+        var analyzer = new ConstructorAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
         var actual = diagnostics
@@ -202,7 +202,7 @@ public class PreserveAttributeAnalyzerTest
             "Interfaces.cs",
             "RegisterEntryPointConstructorWithInjectAttributeClassLifetimeScope.cs");
 
-        var analyzer = new PreserveAttributeAnalyzer();
+        var analyzer = new ConstructorAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
         var actual = diagnostics
@@ -221,7 +221,7 @@ public class PreserveAttributeAnalyzerTest
             "Interfaces.cs",
             "RegisterConstructorWithInjectAttributeClassLifetimeScope.cs");
 
-        var analyzer = new PreserveAttributeAnalyzer();
+        var analyzer = new ConstructorAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
         var actual = diagnostics
@@ -240,7 +240,7 @@ public class PreserveAttributeAnalyzerTest
             "Interfaces.cs",
             "AddConstructorWithoutInjectAttributeClassLifetimeScope.cs");
 
-        var analyzer = new PreserveAttributeAnalyzer();
+        var analyzer = new ConstructorAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
         var actual = diagnostics
@@ -278,7 +278,7 @@ public class PreserveAttributeAnalyzerTest
             "Interfaces.cs",
             "AddConstructorWithInjectAttributeClassLifetimeScope.cs");
 
-        var analyzer = new PreserveAttributeAnalyzer();
+        var analyzer = new ConstructorAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
         var actual = diagnostics

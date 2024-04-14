@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.Operations;
 namespace VContainerAnalyzer.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public sealed class PreserveAttributeAnalyzer : DiagnosticAnalyzer
+public sealed class ConstructorAnalyzer : DiagnosticAnalyzer
 {
     private const string DiagnosticId = "VContainer0001";
 
