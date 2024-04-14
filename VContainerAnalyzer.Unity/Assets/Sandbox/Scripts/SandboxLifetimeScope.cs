@@ -7,6 +7,8 @@ namespace Sandbox
     {
         protected override void Configure(IContainerBuilder builder)
         {
+            builder.RegisterInstance(new EmptyClassStub());
+
 #pragma warning disable VContainer0001
             builder.RegisterEntryPoint<ConstructorWithoutInjectAttributeClass>();
             builder.RegisterEntryPoint<ConstructorWithoutInjectAttributeClass>(Lifetime.Scoped);
