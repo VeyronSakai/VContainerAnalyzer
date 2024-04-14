@@ -47,14 +47,14 @@ jobs:
         with:
           commitish: main
 
-  package-json:
-    name: package-json
+  update-files:
+    name: update-files
     needs: draft
     if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     env:
       VERSION: ${{ needs.draft.outputs.tag_name }}
-      SOURCE_BRANCH: github-actions/package-json/${{ github.run_number }}
+      SOURCE_BRANCH: github-actions/update-files/${{ github.run_number }}
     steps:
       - uses: actions/checkout@v4
       - name: Update package.json
@@ -85,12 +85,37 @@ jobs:
           git switch -C "${SOURCE_BRANCH}"
           git commit -m "Update package.json"
           git push -u origin "${SOURCE_BRANCH}"
+      - name: Update README.md
+        run: |
+          cp -f .github/DRAFT_README.md README.md
+      - name: Confirm README.md diff
+        id: readme
+        run: |
+          git add README.md
+          result=0
+          git diff --cached --exit-code --quiet || result=$?
+          if [ "${result}" -eq 0 ]; then
+            echo "diff=false" >> "${GITHUB_OUTPUT}"
+          elif [ "${result}" -eq 1 ]; then
+            echo "diff=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "exit code of diff is unknown: ${result}"
+            exit 1
+          fi
+      - name: Commit README.md
+        if: ${{ steps.readme.outputs.diff == 'true' }}
+        run: |
+          git config user.email github-actions[bot]@users.noreply.github.com
+          git config user.name github-actions[bot]
+          git switch -C "${SOURCE_BRANCH}"
+          git commit -m "Update README.md"
+          git push -u origin "${SOURCE_BRANCH}"
       - name: Create pull request and merge
-        if: ${{ steps.package-json.outputs.diff == 'true' }}
+        if: ${{ steps.package-json.outputs.diff == 'true' || steps.readme.outputs.diff == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          gh pr create --title "Update package.json" --body "Update package.json" --base main --head "${SOURCE_BRANCH}"
+          gh pr create --title "Update files for release" --body "Update files for release" --base main --head "${SOURCE_BRANCH}"
           gh pr merge "${SOURCE_BRANCH}" --auto --merge
 
   release:
