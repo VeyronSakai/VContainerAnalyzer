@@ -44,10 +44,45 @@ public class PropertyFieldAnalyzerTest
         {
             Assert.That(actual.First().Id, Is.EqualTo("VContainer0002"));
             Assert.That(actual.First().GetMessage(),
-                Is.EqualTo("Injected into '_field' using Property/Field Injection."));
+                Is.EqualTo(
+                    "Injected into '_field' using Property/Field Injection. Consider using Constructor or Method Injection."));
         });
 
-        var expectedPositions = new[] { new { Start = new LinePosition(9, 40), End = new LinePosition(9, 46) }, };
+        var expectedPositions = new[] { new { Start = new LinePosition(9, 9), End = new LinePosition(9, 15) }, };
+
+        Assert.That(actual, Has.Length.EqualTo(expectedPositions.Length));
+
+        for (var i = 0; i < expectedPositions.Length; i++)
+        {
+            LocationAssert.HaveTheSpan(
+                expectedPositions[i].Start,
+                expectedPositions[i].End,
+                actual[i].Location
+            );
+        }
+    }
+
+    [Test]
+    public async ValueTask Analyze_PropertyInjection_ReportDiagnostic()
+    {
+        var source = Helper.ReadCodes("PropertyInjectionClass.cs", "EmptyClassStub.cs");
+        var analyzer = new PropertyFieldAnalyzer();
+        var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
+
+        var actual = diagnostics
+            .Where(x => x.Id != "CS1591") // Ignore "Missing XML comment for publicly visible type or member"
+            .Where(x => x.Id != "CS8019") // Ignore "Unnecessary using directive"
+            .ToArray();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(actual.First().Id, Is.EqualTo("VContainer0002"));
+            Assert.That(actual.First().GetMessage(),
+                Is.EqualTo(
+                    "Injected into 'Property' using Property/Field Injection. Consider using Constructor or Method Injection."));
+        });
+
+        var expectedPositions = new[] { new { Start = new LinePosition(9, 9), End = new LinePosition(9, 15) }, };
 
         Assert.That(actual, Has.Length.EqualTo(expectedPositions.Length));
 

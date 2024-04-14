@@ -16,7 +16,8 @@ public sealed class PropertyFieldAnalyzer : DiagnosticAnalyzer
     private static readonly DiagnosticDescriptor s_rule = new(
         id: DiagnosticId,
         title: "Property/Field Inject has been used.",
-        messageFormat: "Injected into '{0}' using Property/Field Injection.",
+        messageFormat:
+        "Injected into '{0}' using Property/Field Injection. Consider using Constructor or Method Injection.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
@@ -43,20 +44,30 @@ public sealed class PropertyFieldAnalyzer : DiagnosticAnalyzer
 
         if (fieldSymbol != null)
         {
-            if (fieldSymbol.GetAttributes().Any(x => x.AttributeClass?.Name == "InjectAttribute"))
+            var attribute = fieldSymbol.GetAttributes()
+                .FirstOrDefault(x => x.AttributeClass?.Name == "InjectAttribute");
+            if (attribute == null)
             {
-                context.ReportDiagnostic(Diagnostic.Create(s_rule, fieldSymbol.Locations[0], fieldSymbol.Name));
+                return;
             }
+
+            context.ReportDiagnostic(Diagnostic.Create(s_rule,
+                attribute.ApplicationSyntaxReference.GetSyntax().GetLocation(), fieldSymbol.Name));
 
             return;
         }
 
         if (propertySymbol != null)
         {
-            if (propertySymbol.GetAttributes().Any(x => x.AttributeClass?.Name == "InjectAttribute"))
+            var attribute = propertySymbol.GetAttributes()
+                .FirstOrDefault(x => x.AttributeClass?.Name == "InjectAttribute");
+            if (attribute == null)
             {
-                context.ReportDiagnostic(Diagnostic.Create(s_rule, propertySymbol.Locations[0], propertySymbol.Name));
+                return;
             }
+
+            context.ReportDiagnostic(Diagnostic.Create(s_rule,
+                attribute.ApplicationSyntaxReference.GetSyntax().GetLocation(), propertySymbol.Name));
 
             return;
         }
