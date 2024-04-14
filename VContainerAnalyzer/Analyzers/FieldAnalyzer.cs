@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace VContainerAnalyzer.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public sealed class PropertyFieldAnalyzer : DiagnosticAnalyzer
+public sealed class FieldAnalyzer : DiagnosticAnalyzer
 {
     private const string DiagnosticId = "VContainer0002";
 
@@ -29,47 +29,24 @@ public sealed class PropertyFieldAnalyzer : DiagnosticAnalyzer
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
-        context.RegisterSymbolAction(Analyze, SymbolKind.Field, SymbolKind.Property);
+        context.RegisterSymbolAction(Analyze, SymbolKind.Field);
     }
 
     private static void Analyze(SymbolAnalysisContext context)
     {
         var symbol = context.Symbol;
-        var fieldSymbol = symbol as IFieldSymbol;
-        var propertySymbol = symbol as IPropertySymbol;
-        if (fieldSymbol == null && propertySymbol == null)
+        if (symbol is not IFieldSymbol fieldSymbol)
         {
             return;
         }
 
-        if (fieldSymbol != null)
+        var attribute = fieldSymbol.GetAttributes().FirstOrDefault(x => x.AttributeClass.IsPreserveAttribute());
+        if (attribute == null)
         {
-            var attribute = fieldSymbol.GetAttributes()
-                .FirstOrDefault(x => x.AttributeClass?.Name == "InjectAttribute");
-            if (attribute == null)
-            {
-                return;
-            }
-
-            context.ReportDiagnostic(Diagnostic.Create(s_rule,
-                attribute.ApplicationSyntaxReference.GetSyntax().GetLocation(), fieldSymbol.Name));
-
             return;
         }
 
-        if (propertySymbol != null)
-        {
-            var attribute = propertySymbol.GetAttributes()
-                .FirstOrDefault(x => x.AttributeClass?.Name == "InjectAttribute");
-            if (attribute == null)
-            {
-                return;
-            }
-
-            context.ReportDiagnostic(Diagnostic.Create(s_rule,
-                attribute.ApplicationSyntaxReference.GetSyntax().GetLocation(), propertySymbol.Name));
-
-            return;
-        }
+        context.ReportDiagnostic(Diagnostic.Create(s_rule,
+            attribute.ApplicationSyntaxReference.GetSyntax().GetLocation(), fieldSymbol.Name));
     }
 }
