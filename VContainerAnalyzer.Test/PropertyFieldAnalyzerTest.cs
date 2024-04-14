@@ -21,7 +21,7 @@ public class PropertyFieldAnalyzerTest
     public async Task EmptySourceCode_NoDiagnosticReport()
     {
         const string Source = "";
-        var analyzer = new ConstructorAnalyzer();
+        var analyzer = new RegisterMethodsAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, Source);
 
         Assert.That(diagnostics, Is.Empty);

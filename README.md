@@ -35,7 +35,7 @@ VContainerAnalyzer can be set up by using the .unitypackage available at [Releas
 | Severity | Error                                                                                                                                        |
 | Enabled  | True                                                                                                                                         |
 | Category | Usage                                                                                                                                        |
-| Code     | [ConstructorAnalyzer](https://github.com/VeyronSakai/VContainerAnalyzer/blob/main/VContainerAnalyzer/Analyzers/ConstructorAnalyzer.cs) |
+| Code     | [RegisterMethodsAnalyzer](https://github.com/VeyronSakai/VContainerAnalyzer/blob/main/VContainerAnalyzer/Analyzers/RegisterMethodsAnalyzer.cs) |
 
 An error occurs if the constructor of a class registered by the `Register()` or `RegisterEntryPoint()` or `UseEntryPoints()` methods in the Lifetime class does not have an Attribute that extends `PreserveAttribute` such as `InjectAttribute`.
 
