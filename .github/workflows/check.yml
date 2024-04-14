@@ -12,7 +12,7 @@ permissions:
   checks: write
 
 env:
-  UNITY_PROJECT_PATH: "VContainerAnalyzer.Unity/"
+  UNITY_PROJECT_PATH: "VContainerAnalyzer.Unity"
 
 jobs:
   paths:
@@ -25,7 +25,7 @@ jobs:
         with:
           filters: |
             unity:
-              - ${{ env.UNITY_PROJECT_PATH }}
+              - "${{ env.UNITY_PROJECT_PATH }}/**"
 
   unity-meta-check:
     needs: paths
