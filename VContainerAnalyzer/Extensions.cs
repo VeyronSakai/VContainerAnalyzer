@@ -21,14 +21,26 @@ internal static class Extensions
         return baseType != null && IsPreserveAttribute(baseType);
     }
 
-    internal static bool IsInjectAttribute(this ITypeSymbol attributeClass)
+    internal static bool IsVContainerInjectAttribute(this ITypeSymbol attributeClass)
     {
+        var containingNamespace = attributeClass.ContainingNamespace;
+        if (containingNamespace is not { Name: "VContainer" })
+        {
+            return false;
+        }
+
+        containingNamespace = containingNamespace.ContainingNamespace;
+        if (containingNamespace is not { Name: "" })
+        {
+            return false;
+        }
+
         if (attributeClass.Name == InjectAttributeName)
         {
             return true;
         }
 
         var baseType = attributeClass.BaseType;
-        return baseType != null && IsInjectAttribute(baseType);
+        return baseType != null && IsVContainerInjectAttribute(baseType);
     }
 }
