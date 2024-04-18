@@ -20,7 +20,7 @@ VContainerAnalyzer can be set up via Unity Package Manager by following the step
 2. Select the + button in the upper left corner.
 3. Select `Add package from git URL`.
 4. Enter
-   `https://github.com/VeyronSakai/VContainerAnalyzer.git?path=VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer#0.4.1`
+   `https://github.com/VeyronSakai/VContainerAnalyzer.git?path=VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer#0.5.0`
    and Select `Add` button.
 5. Add `VContainer.Analyzer` to the Assembly Definition References of the asmdef to which you want to apply Analyzer.
 
