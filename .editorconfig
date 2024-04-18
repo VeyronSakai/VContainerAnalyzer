@@ -231,6 +231,8 @@ csharp_preserve_single_line_statements = true
 # IDE0060: Remove unused parameter
 dotnet_diagnostic.IDE0060.severity = warning
 
+resharper_foreach_can_be_converted_to_query_using_another_get_enumerator_highlighting = none
+
 [src/{Compilers,ExpressionEvaluator,Scripting}/**Test**/*.{cs,vb}]
 
 # IDE0060: Remove unused parameter
@@ -278,6 +280,7 @@ dotnet_diagnostic.IDE2005.severity = warning
 
 # csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental
 dotnet_diagnostic.IDE2006.severity = warning
+
 
 [src/{VisualStudio}/**/*.{cs,vb}]
 # CA1822: Make member static
