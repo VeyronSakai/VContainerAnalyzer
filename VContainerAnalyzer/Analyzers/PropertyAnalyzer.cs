@@ -30,6 +30,7 @@ public sealed class PropertyAnalyzer : DiagnosticAnalyzer
 
         var attribute = propertySymbol.GetAttributes()
             .FirstOrDefault(x => x.AttributeClass.IsVContainerInjectAttribute());
+
         if (attribute == null)
         {
             return;
