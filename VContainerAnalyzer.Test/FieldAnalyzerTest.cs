@@ -30,7 +30,7 @@ public class FieldAnalyzerTest
     [Test]
     public async ValueTask Analyze_FieldInjection_ReportDiagnostic()
     {
-        var source = Helper.ReadCodes("FieldInjectionClass.cs", "EmptyClassStub.cs");
+        var source = Helper.GetFileContentTexts("FieldInjectionClass.cs", "EmptyClassStub.cs");
         var analyzer = new FieldAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 

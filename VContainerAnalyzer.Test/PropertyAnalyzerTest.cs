@@ -30,7 +30,7 @@ public class PropertyAnalyzerTest
     [Test]
     public async ValueTask Analyze_PropertyInjection_ReportDiagnostic()
     {
-        var source = Helper.ReadCodes("PropertyInjectionClass.cs", "EmptyClassStub.cs");
+        var source = Helper.GetFileContentTexts("PropertyInjectionClass.cs", "EmptyClassStub.cs");
         var analyzer = new PropertyAnalyzer();
         var diagnostics = await DiagnosticAnalyzerRunner.Run(analyzer, source);
 
