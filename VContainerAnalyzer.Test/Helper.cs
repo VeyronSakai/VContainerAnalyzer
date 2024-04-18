@@ -37,10 +37,12 @@ internal static class Helper
             .Select(file => File.ReadAllText($"{TestDataDirPath}/{file}", Encoding.UTF8)).ToArray();
     }
 
-    internal static string GetJoinedFilesContentText(params string[] sources)
+    internal static (string, int offset) GetJoinedFilesContentText(params string[] sources)
     {
         var fileBodyBuilder = new StringBuilder();
         var usingStatementsBuilder = new StringBuilder();
+
+        var offset = 0;
 
         foreach (var filePath in sources.Concat(VContainerSourcePaths))
         {
@@ -50,10 +52,11 @@ internal static class Helper
             var usingDirectives = root.DescendantNodes().OfType<UsingDirectiveSyntax>().ToList();
             var newRoot = root.RemoveNodes(usingDirectives, SyntaxRemoveOptions.KeepNoTrivia);
             var usingStatements = string.Join(Environment.NewLine, usingDirectives.Select(u => u.ToFullString()));
+            offset += usingStatements.Split(Environment.NewLine).Length - 1;
             fileBodyBuilder.Append(newRoot?.ToFullString());
             usingStatementsBuilder.Append(usingStatements);
         }
 
-        return usingStatementsBuilder.Append(fileBodyBuilder).ToString();
+        return (usingStatementsBuilder.Append(fileBodyBuilder).ToString(), offset);
     }
 }
