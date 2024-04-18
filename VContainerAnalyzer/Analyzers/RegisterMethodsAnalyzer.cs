@@ -247,30 +247,7 @@ public sealed class RegisterMethodsAnalyzer : DiagnosticAnalyzer
 
     private static bool HasCustomConstructor(INamedTypeSymbol type)
     {
-        return type.Constructors.Any(methodSymbol => !IsDefaultConstructor(methodSymbol));
-    }
-
-    private static bool IsDefaultConstructor(IMethodSymbol constructor)
-    {
-        if (constructor.IsImplicitlyDeclared)
-        {
-            return true;
-        }
-
-        if (!constructor.Parameters.IsEmpty)
-        {
-            return false;
-        }
-
-        var syntaxReference = constructor.DeclaringSyntaxReferences.FirstOrDefault();
-        var methodBlockNode = syntaxReference?.GetSyntax().ChildNodes().LastOrDefault();
-        if (methodBlockNode == null)
-        {
-            return true;
-        }
-
-        var methodContentNodes = methodBlockNode.ChildNodes();
-        return !methodContentNodes.Any();
+        return type.Constructors.Any(methodSymbol => !methodSymbol.IsDefaultConstructor());
     }
 
     private static bool HasConstructorWithPreserveAttribute(INamedTypeSymbol type)
