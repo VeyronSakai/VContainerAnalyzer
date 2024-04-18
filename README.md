@@ -77,9 +77,6 @@ information.
 
 Bugs and new feature suggestions are welcome in issues and Pull Requests.
 
-If you have made changes to the Analyzer itself, please run the `make all` command and commit the differences in the dll
-files generated and include them in the pull request.
-
 ---
 Analyzer based on the [Roslyn Analyzer Template][template].
 
