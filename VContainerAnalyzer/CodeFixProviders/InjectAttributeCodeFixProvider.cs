@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ using SyntaxFactory = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace VContainerAnalyzer.CodeFixProviders;
 
-[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(InjectAttributeCodeFixProvider))]
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(InjectAttributeCodeFixProvider)), Shared]
 public sealed class InjectAttributeCodeFixProvider : CodeFixProvider
 {
     public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(Rules.Rule0002.Id);
