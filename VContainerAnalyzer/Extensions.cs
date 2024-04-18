@@ -1,6 +1,7 @@
 // Copyright (c) 2020-2024 VeyronSakai.
 // This software is released under the MIT License.
 
+using System.Linq;
 using Microsoft.CodeAnalysis;
 
 namespace VContainerAnalyzer;
@@ -42,5 +43,28 @@ internal static class Extensions
 
         var baseType = attributeClass.BaseType;
         return baseType != null && IsVContainerInjectAttribute(baseType);
+    }
+
+    internal static bool IsDefaultConstructor(this IMethodSymbol constructor)
+    {
+        if (constructor.IsImplicitlyDeclared)
+        {
+            return true;
+        }
+
+        if (!constructor.Parameters.IsEmpty)
+        {
+            return false;
+        }
+
+        var syntaxReference = constructor.DeclaringSyntaxReferences.FirstOrDefault();
+        var methodBlockNode = syntaxReference?.GetSyntax().ChildNodes().LastOrDefault();
+        if (methodBlockNode == null)
+        {
+            return true;
+        }
+
+        var methodContentNodes = methodBlockNode.ChildNodes();
+        return !methodContentNodes.Any();
     }
 }

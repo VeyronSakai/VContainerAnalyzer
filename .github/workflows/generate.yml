@@ -23,6 +23,9 @@ jobs:
       SOURCE_BRANCH: github-actions/update-dll/${{ github.run_number }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7.0.x'
       - name: Build and copy dll
         run: |
           make all
