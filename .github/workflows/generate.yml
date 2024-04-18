@@ -14,8 +14,6 @@ permissions:
   contents: write
 
 env:
-  UNITY_PROJECT_PATH: "VContainerAnalyzer.Unity"
-  ANALYZER_PATH: "VContainerAnalyzer"
   ANALYZER_DLL_PATH: "VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer/VContainerAnalyzer.dll"
 
 jobs:
