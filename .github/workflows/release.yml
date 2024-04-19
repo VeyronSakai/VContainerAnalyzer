@@ -85,7 +85,7 @@ jobs:
           add: "README.md"
           new_branch: ${{ env.SOURCE_BRANCH }}
       - name: Create pull request and merge
-        if: ${{ steps.commit-package-json.outputs.commited == 'true' || steps.commit-readme.outputs.commited == 'true' }}
+        if: ${{ steps.commit-package-json.outputs.committed == 'true' || steps.commit-readme.outputs.committed == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
