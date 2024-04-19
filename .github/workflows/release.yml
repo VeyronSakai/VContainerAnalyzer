@@ -13,6 +13,7 @@ permissions:
   pull-requests: write
 
 env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   PACKAGE_JSON_PATH: VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer/package.json
   ANALYZER_DLL_PATH: VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer/VContainerAnalyzer.dll
   GITHUB_BOT_NAME: github-actions[bot]
