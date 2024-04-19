@@ -13,9 +13,10 @@ permissions:
   pull-requests: write
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   PACKAGE_JSON_PATH: VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer/package.json
   ANALYZER_DLL_PATH: VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer/VContainerAnalyzer.dll
+  GITHUB_BOT_NAME: github-actions[bot]
+  GITHUB_BOT_EMAIL: github-actions[bot]@users.noreply.github.com
 
 concurrency:
   group: ${{ github.workflow }}
@@ -68,8 +69,8 @@ jobs:
         uses: EndBug/add-and-commit@v9
         id: commit-package-json
         with:
-          author_name: github-actions[bot]
-          author_email: github-actions[bot]@users.noreply.github.com
+          author_name: ${{ env.GITHUB_BOT_NAME }}
+          author_email: ${{ env.GITHUB_BOT_EMAIL }}
           message: "Update package.json"
           add: ${{ env.PACKAGE_JSON_PATH }}
           new_branch: ${{ env.SOURCE_BRANCH }}
@@ -80,14 +81,14 @@ jobs:
         uses: EndBug/add-and-commit@v9
         id: commit-readme
         with:
-          author_name: github-actions[bot]
-          author_email: github-actions[bot]@users.noreply.github.com
+          author_name: ${{ env.GITHUB_BOT_NAME }}
+          author_email: ${{ env.GITHUB_BOT_EMAIL }}
           message: "Update README.md"
           add: "README.md"
           new_branch: ${{ env.SOURCE_BRANCH }}
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '7.0.x'
+          dotnet-version: "7.0.x"
       - name: Update VContainerAnalyzer.dll
         run: |
           make all
@@ -95,8 +96,8 @@ jobs:
         uses: EndBug/add-and-commit@v9
         id: commit-dll
         with:
-          author_name: github-actions[bot]
-          author_email: github-actions[bot]@users.noreply.github.com
+          author_name: ${{ env.GITHUB_BOT_NAME }}
+          author_email: ${{ env.GITHUB_BOT_EMAIL }}
           message: "Update VContainerAnalyzer.dll"
           add: ${{ env.ANALYZER_DLL_PATH }}
           new_branch: ${{ env.SOURCE_BRANCH }}
