@@ -47,7 +47,8 @@ See the [VContainer documentation](https://vcontainer.hadashikick.jp/resolving/c
 information.
 
 > [!CAUTION]
-> Analysis is not supported for System class inheriting from Unity.Entities.SystemBase. This is because VContainer's ECS support is beta.
+> Analysis is not supported for System class inheriting from Unity.Entities.SystemBase. This is because VContainer's ECS support is beta. 
+> Also, currently the analysis is performed without considering link.xml.
 
 ### VContainer0002
 
