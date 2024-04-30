@@ -18,8 +18,6 @@ env:
   GITHUB_BOT_EMAIL: github-actions[bot]@users.noreply.github.com
   PACKAGE_JSON_PATH: VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer/package.json
   ANALYZER_DLL_PATH: VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer/VContainerAnalyzer.dll
-  GITHUB_BOT_NAME: github-actions[bot]
-  GITHUB_BOT_EMAIL: github-actions[bot]@users.noreply.github.com
 
 concurrency:
   group: ${{ github.workflow }}
