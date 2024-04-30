@@ -124,7 +124,7 @@ jobs:
           ref: main
       - name: Confirm version in package.json
         run: |
-          package_version=$(jq -r '.version' "${PACKAGE_JSON}")
+          package_version=$(jq -r '.version' "${PACKAGE_JSON_PATH}")
 
           if [[ "${package_version}" != "${VERSION}" ]]; then
             echo "::error::version in package.json (${package_version}) does not match the release draft tag (${VERSION})"
