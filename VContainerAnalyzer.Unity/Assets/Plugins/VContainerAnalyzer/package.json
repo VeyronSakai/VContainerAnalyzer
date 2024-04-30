@@ -1,7 +1,7 @@
 {
   "name": "com.veyronsakai.vcontainer.analyzer",
   "displayName": "VContainer Analyzer",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "unity": "2021.1",
   "unityRelease": "2f1",
   "description": "Roslyn Analyzer for VContainer.",
