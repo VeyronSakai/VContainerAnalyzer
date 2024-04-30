@@ -6,9 +6,8 @@
 Roslyn Analyzer for detecting coding errors in Unity projects
 using [VContainer](https://github.com/hadashiA/VContainer).
 
-This is in a very early stage of development. Please use with caution.
-
-Also note that ECS is not yet supported.
+> [!WARNING]
+> This is in a very early stage of development. Please use with caution.
 
 ## Setup
 
@@ -46,6 +45,10 @@ as `InjectAttribute`.
 
 See the [VContainer documentation](https://vcontainer.hadashikick.jp/resolving/constructor-injection) for more
 information.
+
+> [!CAUTION]
+> Analysis is not supported for System class inheriting from Unity.Entities.SystemBase. This is because VContainer's ECS support is beta. 
+> Also, currently the analysis is performed without considering link.xml.
 
 ### VContainer0002
 

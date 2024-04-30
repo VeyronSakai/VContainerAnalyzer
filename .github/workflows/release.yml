@@ -17,6 +17,9 @@ env:
   GITHUB_BOT_NAME: github-actions[bot]
   GITHUB_BOT_EMAIL: github-actions[bot]@users.noreply.github.com
   PACKAGE_JSON_PATH: VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer/package.json
+  ANALYZER_DLL_PATH: VContainerAnalyzer.Unity/Assets/Plugins/VContainerAnalyzer/VContainerAnalyzer.dll
+  GITHUB_BOT_NAME: github-actions[bot]
+  GITHUB_BOT_EMAIL: github-actions[bot]@users.noreply.github.com
 
 concurrency:
   group: ${{ github.workflow }}
@@ -64,6 +67,7 @@ jobs:
           json_content=$(cat "${PACKAGE_JSON_PATH}")
           updated_json=$(echo "${json_content}" | jq --arg version "${VERSION}" '.version = $version')
           echo "${updated_json}" | jq '.' > "${PACKAGE_JSON_PATH}"
+
       - name: Commit package.json
         uses: EndBug/add-and-commit@v9
         id: commit-package-json
@@ -85,8 +89,23 @@ jobs:
           message: "Update README.md"
           add: "README.md"
           new_branch: ${{ env.SOURCE_BRANCH }}
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "7.0.x"
+      - name: Update VContainerAnalyzer.dll
+        run: |
+          make all
+      - name: Commit VContainerAnalyzer.dll
+        uses: EndBug/add-and-commit@v9
+        id: commit-dll
+        with:
+          author_name: ${{ env.GITHUB_BOT_NAME }}
+          author_email: ${{ env.GITHUB_BOT_EMAIL }}
+          message: "Update VContainerAnalyzer.dll"
+          add: ${{ env.ANALYZER_DLL_PATH }}
+          new_branch: ${{ env.SOURCE_BRANCH }}
       - name: Create pull request and merge
-        if: ${{ steps.commit-package-json.outputs.committed == 'true' || steps.commit-readme.outputs.committed == 'true'}}
+        if: ${{ steps.commit-package-json.outputs.committed == 'true' || steps.commit-readme.outputs.committed == 'true' || steps.commit-dll.outputs.committed == 'true'}}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
