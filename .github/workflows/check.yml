@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: DeNA/unity-meta-check@v3
+      - uses: DeNA/unity-meta-check@v4
         continue-on-error: true
         with:
           ignore_case: true
