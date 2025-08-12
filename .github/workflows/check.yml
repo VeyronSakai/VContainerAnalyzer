@@ -33,7 +33,7 @@ jobs:
     if: ${{ needs.paths.outputs.unity == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: DeNA/unity-meta-check@v4
         continue-on-error: true
         with:
