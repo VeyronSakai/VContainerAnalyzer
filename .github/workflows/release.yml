@@ -86,7 +86,7 @@ jobs:
           message: "Update README.md"
           add: "README.md"
           new_branch: ${{ env.SOURCE_BRANCH }}
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "7.0.x"
       - name: Update VContainerAnalyzer.dll
