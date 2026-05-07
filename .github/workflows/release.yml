@@ -174,7 +174,7 @@ jobs:
             -s https://api.nuget.org/v3/index.json \
             -k "${NUGET_API_KEY}"
       - name: Export unitypackage
-        uses: game-ci/unity-builder@v4
+        uses: game-ci/unity-builder@v5
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
