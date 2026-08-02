@@ -45,7 +45,7 @@ jobs:
     outputs:
       tag_name: ${{ steps.release_drafter.outputs.tag_name }}
     steps:
-      - uses: release-drafter/release-drafter@v6
+      - uses: release-drafter/release-drafter@v7.6.0
         id: release_drafter
         with:
           commitish: main
@@ -134,7 +134,7 @@ jobs:
             echo "::error::version in package.json (${package_version}) does not match the release draft tag (${VERSION})"
             exit 1
           fi
-      - uses: release-drafter/release-drafter@v6
+      - uses: release-drafter/release-drafter@v7.6.0
         id: release-drafter
         with:
           publish: true
