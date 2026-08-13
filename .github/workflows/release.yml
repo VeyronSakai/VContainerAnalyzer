@@ -66,7 +66,7 @@ jobs:
           updated_json=$(echo "${json_content}" | jq --arg version "${VERSION}" '.version = $version')
           echo "${updated_json}" | jq '.' > "${PACKAGE_JSON_PATH}"
       - name: Commit package.json
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v11
         id: commit-package-json
         with:
           author_name: ${{ env.GITHUB_BOT_NAME }}
@@ -78,7 +78,7 @@ jobs:
         run: |
           cp -f .github/DRAFT_README.md README.md
       - name: Commit README.md
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v11
         id: commit-readme
         with:
           author_name: ${{ env.GITHUB_BOT_NAME }}
@@ -93,7 +93,7 @@ jobs:
         run: |
           make all
       - name: Commit VContainerAnalyzer.dll
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v11
         id: commit-dll
         with:
           author_name: ${{ env.GITHUB_BOT_NAME }}
